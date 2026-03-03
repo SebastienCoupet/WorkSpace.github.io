@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkSpace+ — Démo interactive · Nexio Group</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0B2545;--blue:#1B4F8A;--teal:#13C3A3;--teal2:#0fa88d;
+  --gold:#F4A621;--white:#fff;--off:#F4F7FB;--muted:#6B7F94;
+  --border:#DDE6F0;--text:#1A2B3C;--red:#EF4444;--green:#22C55E;
+  --sidebar:240px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--off);overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* DEMO BANNER */
+.demo-banner{
+  position:fixed;top:0;left:0;right:0;z-index:2000;
+  background:linear-gradient(90deg,var(--teal),var(--teal2));
+  padding:7px 20px;display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:700;color:var(--navy);
+}
+.demo-banner a{color:var(--navy);text-decoration:none;border-bottom:1.5px solid rgba(11,37,69,0.3)}
+.demo-pill{background:rgba(11,37,69,0.15);padding:3px 10px;border-radius:12px;font-size:10px;letter-spacing:.5px}
+
+/* SHELL */
+.shell{display:flex;height:100vh;padding-top:33px}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;background:var(--navy);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.sb-logo{
+  padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);
+  font-family:'Fraunces',serif;font-size:20px;color:white;font-weight:600;
+}
+.sb-logo span{color:var(--teal);font-style:italic}
+.sb-company{
+  margin:12px;background:rgba(255,255,255,0.06);border-radius:10px;
+  padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;
+  transition:background .15s;
+}
+.sb-company:hover{background:rgba(255,255,255,0.1)}
+.co-logo{
+  width:30px;height:30px;border-radius:7px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:white;
+}
+.co-name{font-size:12px;font-weight:700;color:white}
+.co-site{font-size:10px;color:rgba(255,255,255,.35)}
+.co-chevron{margin-left:auto;color:rgba(255,255,255,.2);font-size:11px}
+.sb-section{
+  font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.25);padding:14px 18px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 18px;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,.45);
+  cursor:pointer;transition:all .15s;border-left:3px solid transparent;
+}
+.nav-item:hover{color:white;background:rgba(255,255,255,.04)}
+.nav-item.active{color:var(--teal);background:rgba(19,195,163,.08);border-left-color:var(--teal);font-weight:600}
+.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;background:var(--teal);color:var(--navy);
+  font-size:9px;font-weight:800;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;
+}
+.nav-badge.red{background:var(--red);color:white}
+.sb-footer{
+  margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;gap:10px;
+}
+.u-av{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;
+}
+.u-name{font-size:12px;font-weight:600;color:white}
+.u-role{font-size:10px;color:rgba(255,255,255,.3)}
+.u-dot{
+  margin-left:auto;width:8px;height:8px;border-radius:50%;
+  background:var(--green);border:2px solid var(--navy);
+}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{
+  background:white;border-bottom:1px solid var(--border);
+  padding:0 24px;height:56px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;
+  position:sticky;top:0;z-index:10;
+}
+.tb-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy)}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{
+  padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--border);background:white;
+  color:var(--navy);font-family:inherit;transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.tb-btn:hover{border-color:var(--teal);color:var(--teal)}
+.tb-btn.primary{background:var(--teal);color:var(--navy);border-color:var(--teal)}
+.tb-btn.primary:hover{background:var(--teal2)}
+.site-pill{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;
+  background:var(--off);border:1px solid var(--border);border-radius:8px;
+  font-size:12px;font-weight:600;color:var(--navy);cursor:pointer;
+}
+.site-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* PAGE CONTENT */
+.page-content{padding:22px 24px;flex:1}
+.page{display:none}.page.active{display:block}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat-card{
+  background:white;border-radius:14px;border:1px solid var(--border);
+  padding:18px;transition:all .2s;
+}
+.stat-card:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(19,195,163,.08)}
+.stat-icon{font-size:22px;margin-bottom:8px}
+.stat-num{
+  font-family:'Fraunces',serif;font-size:30px;font-weight:600;
+  color:var(--navy);line-height:1;letter-spacing:-1px;
+}
+.stat-num span{color:var(--teal)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+.stat-trend{font-size:10px;margin-top:5px}
+.up{color:var(--green)}.down{color:var(--red)}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g73{display:grid;grid-template-columns:7fr 3fr;gap:16px}
+.g64{display:grid;grid-template-columns:6fr 4fr;gap:16px}
+
+/* CARD */
+.card{background:white;border-radius:14px;border:1px solid var(--border);padding:18px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:700;color:var(--navy)}
+.card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* BADGES */
+.badge{padding:3px 8px;border-radius:5px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.b-free{background:#dcfce7;color:#16a34a}
+.b-busy{background:#fee2e2;color:#dc2626}
+.b-soon{background:#fef3c7;color:#d97706}
+.b-pending{background:#ede9fe;color:#7c3aed}
+
+/* ROOM CARDS */
+.rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.room-card{
+  background:white;border-radius:14px;border:1.5px solid var(--border);
+  overflow:hidden;cursor:pointer;transition:all .2s;
+}
+.room-card:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(19,195,163,.1);transform:translateY(-2px)}
+.room-img{
+  height:76px;display:flex;align-items:flex-end;padding:8px 10px;
+  justify-content:space-between;
+}
+.ri1{background:linear-gradient(135deg,#1B4F8A,#0B2545)}
+.ri2{background:linear-gradient(135deg,#0d6e5a,#0B2545)}
+.ri3{background:linear-gradient(135deg,#7a5010,#0B2545)}
+.ri4{background:linear-gradient(135deg,#4a1e8a,#0B2545)}
+.ri5{background:linear-gradient(135deg,#0B2545,#1a3a5c)}
+.ri6{background:linear-gradient(135deg,#1a4a2a,#0B2545)}
+.room-cap{font-size:10px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:3px}
+.room-body{padding:10px 12px}
+.room-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.room-info{font-size:10px;color:var(--muted);margin-bottom:8px}
+.slots{display:flex;gap:3px;flex-wrap:wrap}
+.slot{
+  padding:3px 7px;border-radius:4px;font-size:9px;font-weight:600;
+  border:1px solid var(--border);background:var(--off);color:var(--text);
+  cursor:pointer;transition:all .15s;
+}
+.slot:hover{background:#e0faf5;border-color:var(--teal);color:var(--teal)}
+.slot.sel{background:var(--navy);color:white;border-color:var(--navy)}
+.slot.taken{background:#fee2e2;color:#ef4444;border-color:#fca5a5;cursor:not-allowed;text-decoration:line-through}
+
+/* DESK MAP */
+.floor-tabs{display:flex;gap:6px;margin-bottom:14px}
+.floor-tab{
+  padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;
+  border:1.5px solid var(--border);cursor:pointer;color:var(--muted);
+  background:white;transition:all .15s;
+}
+.floor-tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.desk-legend{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:2px}
+.zone-lbl{
+  font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin:14px 0 8px;display:flex;align-items:center;gap:8px;
+}
+.zone-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.desk-row{display:flex;gap:5px;margin-bottom:5px;align-items:center}
+.desk{
+  width:42px;height:34px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:700;cursor:pointer;
+  transition:all .15s;border:1.5px solid transparent;flex-shrink:0;
+}
+.d-free{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
+.d-free:hover{background:#16a34a;color:white;border-color:#16a34a;transform:scale(1.08)}
+.d-taken{background:#fee2e2;color:#dc2626;border-color:#fca5a5;cursor:not-allowed}
+.d-sel{background:var(--navy);color:white;border-color:var(--teal);transform:scale(1.05)}
+.d-mine{background:var(--teal);color:var(--navy);border-color:var(--teal2)}
+.d-wall{background:var(--border);cursor:default;border:none;opacity:.5}
+.d-win{background:#bfdbfe;color:#1e40af;border-color:#93c5fd;cursor:default;font-size:8px}
+.gap{width:18px;flex-shrink:0}
+
+/* MEAL */
+.meal-cats{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.meal-cat{
+  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;
+  border:1.5px solid var(--border);cursor:pointer;color:var(--muted);
+  background:white;transition:all .15s;
+}
+.meal-cat.active{background:var(--navy);color:white;border-color:var(--navy)}
+.meals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.meal-card{
+  background:white;border-radius:12px;border:1.5px solid var(--border);
+  overflow:hidden;transition:all .2s;
+}
+.meal-card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.meal-img{
+  height:90px;display:flex;align-items:flex-end;padding:8px;
+  position:relative;
+}
+.m1{background:linear-gradient(135deg,#92400e,#451a03)}
+.m2{background:linear-gradient(135deg,#065f46,#022c22)}
+.m3{background:linear-gradient(135deg,#1e3a8a,#0B2545)}
+.m4{background:linear-gradient(135deg,#7c2d12,#431407)}
+.m5{background:linear-gradient(135deg,#4c1d95,#1e0060)}
+.m6{background:linear-gradient(135deg,#134e4a,#042f2e)}
+.meal-tag{
+  position:absolute;top:8px;left:8px;
+  padding:2px 8px;border-radius:4px;font-size:8px;font-weight:700;
+  text-transform:uppercase;
+}
+.mt-veg{background:#dcfce7;color:#16a34a}
+.mt-pop{background:#fef3c7;color:#d97706}
+.mt-new{background:#e0e7ff;color:#3730a3}
+.meal-body{padding:10px}
+.meal-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.meal-desc{font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+.meal-footer{display:flex;align-items:center;justify-content:space-between}
+.meal-price{font-size:14px;font-weight:700;color:var(--navy)}
+.meal-price span{font-size:10px;color:var(--muted);font-weight:400}
+.qty-ctrl{display:flex;align-items:center;gap:6px}
+.qty-btn{
+  width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);
+  background:white;cursor:pointer;font-size:14px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:var(--navy);transition:all .15s;
+}
+.qty-btn:hover{border-color:var(--teal);color:var(--teal)}
+.qty-num{font-size:12px;font-weight:700;color:var(--navy);min-width:14px;text-align:center}
+
+/* CART */
+.cart-panel{
+  background:white;border-radius:14px;border:1px solid var(--border);
+  padding:16px;position:sticky;top:0;
+}
+.cart-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;
+}
+.cart-item:last-child{border-bottom:none}
+.cart-total{
+  display:flex;justify-content:space-between;font-size:14px;font-weight:700;
+  color:var(--navy);padding-top:10px;margin-top:4px;
+  border-top:2px solid var(--navy);
+}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:white;border-radius:20px;width:500px;max-height:85vh;
+  overflow-y:auto;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.2);
+  animation:mIn .25s ease;
+}
+@keyframes mIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--navy);margin-bottom:18px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);margin-top:-4px}
+.f-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;display:block}
+.f-input,.f-select,.f-textarea{
+  width:100%;padding:10px 12px;border-radius:9px;
+  border:1.5px solid var(--border);font-size:13px;font-family:inherit;
+  color:var(--text);background:var(--off);outline:none;
+  transition:border-color .15s;margin-bottom:12px;
+}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--teal);background:white}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-textarea{resize:vertical;min-height:70px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.chip{
+  display:flex;align-items:center;gap:4px;padding:3px 8px 3px 5px;
+  border-radius:20px;background:#e0faf5;color:var(--teal);font-size:10px;font-weight:600;
+}
+.chip-av{
+  width:16px;height:16px;border-radius:50%;background:var(--teal);
+  color:white;font-size:7px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.add-chip{
+  display:flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:20px;background:var(--off);border:1.5px dashed var(--border);
+  font-size:10px;color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.add-chip:hover{border-color:var(--teal);color:var(--teal)}
+.meal-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;background:#e0faf5;border-radius:10px;margin-bottom:12px;
+  border:1.5px solid rgba(19,195,163,.2);cursor:pointer;
+}
+.mt-text{font-size:12px;font-weight:600;color:var(--teal)}
+.mt-sub{font-size:10px;color:rgba(19,195,163,.6)}
+.toggle{width:34px;height:18px;background:var(--teal);border-radius:9px;position:relative;transition:background .2s}
+.toggle.off{background:var(--border)}
+.toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:white;top:3px;right:3px;transition:right .2s}
+.toggle.off::after{right:auto;left:3px}
+.summary{background:var(--off);border-radius:10px;padding:12px;margin-bottom:14px}
+.sum-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px}
+.sum-row strong{color:var(--text)}
+.sum-total{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--navy);border-top:1px solid var(--border);padding-top:8px;margin-top:3px}
+.confirm-btn{
+  width:100%;padding:13px;background:var(--teal);color:var(--navy);
+  border:none;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.confirm-btn:hover{background:var(--teal2)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;right:20px;z-index:9999;
+  background:var(--navy);color:white;padding:12px 18px;border-radius:12px;
+  font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.2);transform:translateY(80px);
+  opacity:0;transition:all .3s;border-left:4px solid var(--teal);
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ACTIVITY */
+.act-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.act-text{font-size:12px;color:var(--text);line-height:1.5}
+.act-time{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* MINI CHART */
+.mini-bar{display:flex;align-items:flex-end;gap:4px;height:60px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bar-fill{border-radius:3px 3px 0 0;width:100%;min-height:4px;transition:height .3s}
+.bar-lbl{font-size:8px;color:var(--muted);font-weight:600}
+
+/* OCCUPANCY ROW */
+.occ-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.occ-row:last-child{border-bottom:none}
+.occ-name{font-size:12px;font-weight:600;color:var(--navy);width:120px;flex-shrink:0}
+.occ-bar-wrap{flex:1;background:var(--off);border-radius:4px;height:8px;overflow:hidden}
+.occ-bar{height:100%;border-radius:4px;transition:width .5s}
+.occ-pct{font-size:11px;font-weight:700;color:var(--navy);width:36px;text-align:right}
+</style>
+</head>
+<body>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner">
+  <span>🎯 Mode démo — Données fictives · Nexio Group (Île-de-France)</span>
+  <span class="demo-pill">WorkSpace+ Demo</span>
+  <a href="index.html">← Retour au site</a>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">Work<span>Space+</span></div>
+
+    <div class="sb-company" onclick="cycleSite()">
+      <div class="co-logo" id="co-logo">NG</div>
+      <div>
+        <div class="co-name">Nexio Group</div>
+        <div class="co-site" id="co-site-label">📍 Paris – La Défense</div>
+      </div>
+      <div class="co-chevron">⇅</div>
+    </div>
+
+    <div class="sb-section">Espaces</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <span class="nav-icon">📊</span> Tableau de bord
+    </div>
+    <div class="nav-item" onclick="showPage('salles',this)">
+      <span class="nav-icon">🏢</span> Salles de réunion
+      <span class="nav-badge">3</span>
+    </div>
+    <div class="nav-item" onclick="showPage('bureaux',this)">
+      <span class="nav-icon">💺</span> Bureaux flex
+    </div>
+    <div class="sb-section">Services</div>
+    <div class="nav-item" onclick="showPage('repas',this)">
+      <span class="nav-icon">☕</span> Commander repas
+      <span class="nav-badge red">1</span>
+    </div>
+    <div class="nav-item" onclick="showPage('mesresa',this)">
+      <span class="nav-icon">📋</span> Mes réservations
+    </div>
+    <div class="sb-section">Admin</div>
+    <div class="nav-item" onclick="showPage('admin',this)">
+      <span class="nav-icon">⚙️</span> Administration
+    </div>
+
+    <div class="sb-footer">
+      <div class="u-av">SC</div>
+      <div>
+        <div class="u-name">Sophie C.</div>
+        <div class="u-role">Office Manager</div>
+      </div>
+      <div class="u-dot"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="tb-title" id="tb-title">Tableau de bord</div>
+        <div class="tb-sub" id="tb-sub">Mardi 4 mars 2026 · Bienvenue Sophie 👋</div>
+      </div>
+      <div class="tb-right">
+        <div class="site-pill" onclick="cycleSite()">
+          <div class="site-dot"></div>
+          <span id="site-name">Paris – La Défense</span> ▾
+        </div>
+        <button class="tb-btn primary" onclick="showPage('salles',document.querySelectorAll('.nav-item')[1])">+ Réserver</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-num">8<span>/12</span></div>
+            <div class="stat-label">Salles disponibles</div>
+            <div class="stat-trend up">↑ 2 libérées ce matin</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💺</div>
+            <div class="stat-num">34<span>/80</span></div>
+            <div class="stat-label">Bureaux occupés</div>
+            <div class="stat-trend">Taux : 42% aujourd'hui</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-num">67<span>%</span></div>
+            <div class="stat-label">Présence sur site</div>
+            <div class="stat-trend up">↑ +8% vs hier</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">☕</div>
+            <div class="stat-num">3</div>
+            <div class="stat-label">Commandes repas</div>
+            <div class="stat-trend">Livraison à 12h30</div>
+          </div>
+        </div>
+
+        <div class="g73" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Occupation des salles aujourd'hui</div>
+                <div class="card-sub">Site Paris – La Défense · Mardi 4 mars</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <div style="padding:12px;background:var(--off);border-radius:10px;border:1px solid var(--border)">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">Salle Haussmann</div>
+                <div style="font-size:10px;color:var(--muted);margin-bottom:8px">8 pers · 3e ét.</div>
+                <div style="display:flex;gap:3px;flex-wrap:wrap">
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">9h</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">10h</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">11h ✓</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">15h ✓</span>
+                </div>
+              </div>
+              <div style="padding:12px;background:var(--off);border-radius:10px;border:1px solid var(--border)">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">Salle Rivoli</div>
+                <div style="font-size:10px;color:var(--muted);margin-bottom:8px">6 pers · 2e ét.</div>
+                <div style="display:flex;gap:3px;flex-wrap:wrap">
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">9h ✓</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">10h ✓</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">11h</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">14h ✓</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">15h</span>
+                </div>
+              </div>
+              <div style="padding:12px;background:var(--off);border-radius:10px;border:1px solid var(--border)">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">Salle Opéra</div>
+                <div style="font-size:10px;color:var(--muted);margin-bottom:8px">12 pers · 4e ét.</div>
+                <div style="display:flex;gap:3px;flex-wrap:wrap">
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">9h</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">10h</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">11h</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">16h ✓</span>
+                </div>
+              </div>
+              <div style="padding:12px;background:var(--off);border-radius:10px;border:1px solid var(--border)">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">Bulle Calme A</div>
+                <div style="font-size:10px;color:var(--muted);margin-bottom:8px">4 pers · 2e ét.</div>
+                <div style="display:flex;gap:3px;flex-wrap:wrap">
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">9h ✓</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">10h ✓</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">11h ✓</span>
+                  <span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span>
+                  <span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">15h ✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Activité récente</div></div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--teal)"></div>
+              <div>
+                <div class="act-text">Thomas G. a réservé <strong>Salle Haussmann</strong> — 14h à 16h</div>
+                <div class="act-time">Il y a 12 min</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--gold)"></div>
+              <div>
+                <div class="act-text">Commande repas confirmée — <strong>3 plateaux Delizia</strong></div>
+                <div class="act-time">Il y a 28 min</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--green)"></div>
+              <div>
+                <div class="act-text">Sara C. a choisi bureau <strong>A4</strong> — Open space Nord</div>
+                <div class="act-time">Il y a 45 min</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:#8B5CF6"></div>
+              <div>
+                <div class="act-text">Salle Opéra libérée automatiquement (absence)</div>
+                <div class="act-time">Il y a 1h02</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--red)"></div>
+              <div>
+                <div class="act-text">Alerte : Salle Rivoli réservée sans check-in</div>
+                <div class="act-time">Il y a 1h30</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Taux d'occupation par site — Cette semaine</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🏙️ La Défense</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:72%;background:var(--teal)"></div></div>
+              <div class="occ-pct">72%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🌆 Boulogne</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:58%;background:var(--blue)"></div></div>
+              <div class="occ-pct">58%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🏘️ Saint-Denis</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:41%;background:var(--gold)"></div></div>
+              <div class="occ-pct">41%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🏛️ Vincennes</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:33%;background:#8B5CF6)"></div></div>
+              <div class="occ-pct">33%</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Prochaines réservations</div></div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--teal)"></div>
+              <div>
+                <div class="act-text"><strong>10h00</strong> · Salle Haussmann · Sprint review</div>
+                <div class="act-time">Sophie C. + 4 personnes</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--blue)"></div>
+              <div>
+                <div class="act-text"><strong>11h30</strong> · Déjeuner Delizia · 3 plateaux</div>
+                <div class="act-time">Livraison salle Haussmann</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--gold)"></div>
+              <div>
+                <div class="act-text"><strong>14h00</strong> · Salle Opéra · Comité de direction</div>
+                <div class="act-time">12 participants · Site La Défense</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--green)"></div>
+              <div>
+                <div class="act-text"><strong>16h00</strong> · Bulle Calme B · Focus time</div>
+                <div class="act-time">Thomas G. · 2h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SALLES ══ -->
+      <div class="page" id="page-salles">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="tb-btn" style="background:var(--navy);color:white;border-color:var(--navy)">Toutes</button>
+            <button class="tb-btn">🎥 Visio</button>
+            <button class="tb-btn">👥 +6 pers.</button>
+            <button class="tb-btn">🔇 Calme</button>
+            <button class="tb-btn">📽️ Projecteur</button>
+          </div>
+          <div style="display:flex;gap:6px">
+            <div class="site-pill" onclick="cycleSite()"><div class="site-dot"></div><span id="site-name2">La Défense</span> ▾</div>
+          </div>
+        </div>
+
+        <!-- Date strip -->
+        <div style="display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px">
+          <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--off);border:1.5px solid var(--border);text-align:center;cursor:pointer;min-width:56px">
+            <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase">Lun</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">3</div>
+          </div>
+          <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--navy);border:1.5px solid var(--navy);text-align:center;cursor:pointer;min-width:56px" id="date-active">
+            <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase">Mar</div>
+            <div style="font-size:14px;font-weight:700;color:white">4</div>
+          </div>
+          <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--off);border:1.5px solid var(--border);text-align:center;cursor:pointer;min-width:56px">
+            <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase">Mer</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">5</div>
+          </div>
+          <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--off);border:1.5px solid var(--border);text-align:center;cursor:pointer;min-width:56px">
+            <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase">Jeu</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">6</div>
+          </div>
+          <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--off);border:1.5px solid var(--border);text-align:center;cursor:pointer;min-width:56px">
+            <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase">Ven</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">7</div>
+          </div>
+        </div>
+
+        <div class="rooms-grid">
+          <div class="room-card" onclick="openModal('Salle Haussmann','3e étage · 8 pers · Visio + Écran')">
+            <div class="room-img ri1">
+              <span class="badge b-free">Libre</span>
+              <span class="room-cap">👥 8</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Salle Haussmann</div>
+              <div class="room-info">3e étage · 🎥 Visio · 🖥️ Écran · ☕ Repas</div>
+              <div class="slots">
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div>
+                <div class="slot sel" onclick="event.stopPropagation();toggleSlot(this)">10h</div>
+                <div class="slot sel" onclick="event.stopPropagation();toggleSlot(this)">11h</div>
+                <div class="slot taken">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-card" onclick="openModal('Salle Rivoli','2e étage · 6 pers · Calme')">
+            <div class="room-img ri2">
+              <span class="badge b-soon">Bientôt libre</span>
+              <span class="room-cap">👥 6</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Salle Rivoli</div>
+              <div class="room-info">2e étage · 🔇 Calme · 🖥️ Écran</div>
+              <div class="slots">
+                <div class="slot taken">9h</div>
+                <div class="slot taken">10h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-card" onclick="openModal('Salle Opéra','4e étage · 12 pers · Projecteur')">
+            <div class="room-img ri3">
+              <span class="badge b-busy">Occupée</span>
+              <span class="room-cap">👥 12</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Salle Opéra</div>
+              <div class="room-info">4e étage · 🎥 Visio · 📽️ Projecteur</div>
+              <div class="slots">
+                <div class="slot taken">9h</div>
+                <div class="slot taken">10h</div>
+                <div class="slot taken">11h</div>
+                <div class="slot taken">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-card" onclick="openModal('Bulle Calme A','2e étage · 4 pers · Concentration')">
+            <div class="room-img ri4">
+              <span class="badge b-free">Libre</span>
+              <span class="room-cap">👥 4</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Bulle Calme A</div>
+              <div class="room-info">2e étage · 🔇 Concentration</div>
+              <div class="slots">
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-card" onclick="openModal('Espace Collab B','2e étage · 8 pers · Collaboratif')">
+            <div class="room-img ri5">
+              <span class="badge b-free">Libre</span>
+              <span class="room-cap">👥 8</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Espace Collab B</div>
+              <div class="room-info">2e étage · 🧩 Collaboratif · 🖥️ Écran</div>
+              <div class="slots">
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div>
+                <div class="slot taken">11h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-card" onclick="openModal('Salle Madeleine','1er étage · 6 pers · Visio')">
+            <div class="room-img ri6">
+              <span class="badge b-free">Libre</span>
+              <span class="room-cap">👥 6</span>
+            </div>
+            <div class="room-body">
+              <div class="room-name">Salle Madeleine</div>
+              <div class="room-info">1er étage · 🎥 Visio · ☕ Repas</div>
+              <div class="slots">
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div>
+                <div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BUREAUX ══ -->
+      <div class="page" id="page-bureaux">
+        <div class="floor-tabs">
+          <div class="floor-tab active" onclick="selectFloor(this,'2')">2e étage</div>
+          <div class="floor-tab" onclick="selectFloor(this,'3')">3e étage</div>
+          <div class="floor-tab" onclick="selectFloor(this,'4')">4e étage</div>
+        </div>
+
+        <div class="g64">
+          <div class="desk-map-container card">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px" id="floor-title">Plan · 2e étage — Open Space Nord · La Défense</div>
+            <div class="desk-legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#dcfce7;border:1px solid #bbf7d0"></div>Libre</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#fee2e2;border:1px solid #fca5a5"></div>Occupé</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--navy)"></div>Sélectionné</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--teal)"></div>Ma résa habituelle</div>
+            </div>
+
+            <div class="zone-lbl">Rangée Fenêtre (vue Tour Eiffel)</div>
+            <div class="desk-row">
+              <span class="desk d-win">🪟</span><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span>
+              <span class="gap"></span>
+              <span class="desk d-win">🪟</span><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span>
+            </div>
+            <div class="desk-row">
+              <span class="desk d-free" onclick="selDesk(this,'A1')">A1</span>
+              <span class="desk d-taken">A2</span>
+              <span class="desk d-free" onclick="selDesk(this,'A3')">A3</span>
+              <span class="gap"></span>
+              <span class="desk d-sel" onclick="selDesk(this,'A4')">A4</span>
+              <span class="desk d-free" onclick="selDesk(this,'A5')">A5</span>
+              <span class="desk d-taken">A6</span>
+            </div>
+
+            <div class="zone-lbl">Rangée Centrale</div>
+            <div class="desk-row">
+              <span class="desk d-taken">B1</span>
+              <span class="desk d-taken">B2</span>
+              <span class="desk d-free" onclick="selDesk(this,'B3')">B3</span>
+              <span class="gap"></span>
+              <span class="desk d-free" onclick="selDesk(this,'B4')">B4</span>
+              <span class="desk d-taken">B5</span>
+              <span class="desk d-free" onclick="selDesk(this,'B6')">B6</span>
+            </div>
+            <div class="desk-row">
+              <span class="desk d-free" onclick="selDesk(this,'C1')">C1</span>
+              <span class="desk d-mine">C2★</span>
+              <span class="desk d-taken">C3</span>
+              <span class="gap"></span>
+              <span class="desk d-free" onclick="selDesk(this,'C4')">C4</span>
+              <span class="desk d-taken">C5</span>
+              <span class="desk d-free" onclick="selDesk(this,'C6')">C6</span>
+            </div>
+
+            <div class="zone-lbl">Couloir</div>
+            <div class="desk-row">
+              <span class="desk d-wall"></span><span class="desk d-wall"></span><span class="desk d-wall"></span>
+              <span class="gap"></span>
+              <span class="desk d-wall"></span><span class="desk d-wall"></span><span class="desk d-wall"></span>
+            </div>
+
+            <div class="zone-lbl">Rangée Sud</div>
+            <div class="desk-row">
+              <span class="desk d-taken">D1</span>
+              <span class="desk d-free" onclick="selDesk(this,'D2')">D2</span>
+              <span class="desk d-free" onclick="selDesk(this,'D3')">D3</span>
+              <span class="gap"></span>
+              <span class="desk d-taken">D4</span>
+              <span class="desk d-taken">D5</span>
+              <span class="desk d-free" onclick="selDesk(this,'D6')">D6</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:14px">
+              <div class="card-title" style="margin-bottom:12px">💺 Bureau sélectionné</div>
+              <div style="background:var(--off);border-radius:10px;padding:14px;margin-bottom:12px">
+                <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px" id="desk-selected-name">Bureau A4 · Rangée Fenêtre</div>
+                <div style="font-size:11px;color:var(--muted)">2e étage · Vue extérieure · La Défense</div>
+              </div>
+              <label class="f-label">Horaires</label>
+              <select class="f-select">
+                <option>Journée complète (9h–18h)</option>
+                <option>Matinée (9h–13h)</option>
+                <option>Après-midi (13h–18h)</option>
+              </select>
+              <label class="f-label">Date</label>
+              <input class="f-input" type="text" value="Mardi 4 mars 2026" readonly />
+              <div style="background:#e0faf5;border-radius:8px;padding:10px;font-size:11px;color:var(--teal);font-weight:600;margin-bottom:12px">
+                ✓ Aucun frais — bureau inclus dans votre licence
+              </div>
+              <button class="confirm-btn" onclick="confirmDesk()">Réserver ce bureau →</button>
+            </div>
+            <div class="card">
+              <div class="card-title" style="margin-bottom:10px">👥 Équipe présente aujourd'hui</div>
+              <div class="act-item">
+                <div class="act-dot" style="background:var(--green)"></div>
+                <div><div class="act-text"><strong>Sara C.</strong> · Bureau B2</div><div class="act-time">Arrivée 8h45</div></div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot" style="background:var(--green)"></div>
+                <div><div class="act-text"><strong>Thomas G.</strong> · Bureau A2</div><div class="act-time">Arrivée 9h10</div></div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot" style="background:var(--gold)"></div>
+                <div><div class="act-text"><strong>Luc M.</strong> · Non encore arrivé</div><div class="act-time">Prévu 10h</div></div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot" style="background:var(--muted)"></div>
+                <div><div class="act-text"><strong>Aline B.</strong> · Télétravail</div><div class="act-time">Remote aujourd'hui</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ REPAS ══ -->
+      <div class="page" id="page-repas">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--navy)">Partenaire : <span style="color:var(--teal)">Delizia Paris</span> · Livraison garantie en 30 min</div>
+            <div style="font-size:11px;color:var(--muted)">Commande avant 11h30 pour livraison à 12h · La Défense</div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);background:var(--off);padding:6px 12px;border-radius:8px;border:1px solid var(--border)">
+            🕐 Commande ouverte jusqu'à <strong>11h30</strong>
+          </div>
+        </div>
+
+        <div class="meal-cats">
+          <div class="meal-cat active" onclick="filterMeals(this,'all')">Tout voir</div>
+          <div class="meal-cat" onclick="filterMeals(this,'petit-dej')">☕ Petit-déjeuner</div>
+          <div class="meal-cat" onclick="filterMeals(this,'dejeuner')">🍽️ Déjeuner</div>
+          <div class="meal-cat" onclick="filterMeals(this,'snack')">🥗 Snacks & Salades</div>
+          <div class="meal-cat" onclick="filterMeals(this,'boisson')">🥤 Boissons</div>
+        </div>
+
+        <div class="g73">
+          <div class="meals-grid" id="meals-grid">
+            <div class="meal-card" data-cat="petit-dej">
+              <div class="meal-img m1">
+                <div class="meal-tag mt-pop">⭐ Populaire</div>
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">🥐</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Plateau Croissants (x6)</div>
+                <div class="meal-desc">Croissants beurre, pains au chocolat, viennoiseries</div>
+                <div class="meal-footer">
+                  <div class="meal-price">18,00 € <span>/ plateau</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">1</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="meal-card" data-cat="dejeuner">
+              <div class="meal-img m2">
+                <div class="meal-tag mt-veg">🌿 Végétarien</div>
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">🥗</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Bowl Végétarien</div>
+                <div class="meal-desc">Quinoa, légumes rôtis, houmous, feta</div>
+                <div class="meal-footer">
+                  <div class="meal-price">12,50 € <span>/ pers.</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">0</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="meal-card" data-cat="dejeuner">
+              <div class="meal-img m3">
+                <div class="meal-tag mt-pop">⭐ Populaire</div>
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">🥩</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Plateau Sandwichs Mix</div>
+                <div class="meal-desc">Assortiment 6 sandwichs premium, condiments</div>
+                <div class="meal-footer">
+                  <div class="meal-price">42,00 € <span>/ plateau</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">2</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="meal-card" data-cat="snack">
+              <div class="meal-img m4">
+                <div class="meal-tag mt-new">✨ Nouveau</div>
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">🍱</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Bento Japonais</div>
+                <div class="meal-desc">Saumon teriyaki, riz, edamame, miso</div>
+                <div class="meal-footer">
+                  <div class="meal-price">14,90 € <span>/ pers.</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">0</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="meal-card" data-cat="boisson">
+              <div class="meal-img m5">
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">☕</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Pack Café & Thé (x10)</div>
+                <div class="meal-desc">Cafés, thés assortis, sucres, lait</div>
+                <div class="meal-footer">
+                  <div class="meal-price">15,00 € <span>/ pack</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">0</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="meal-card" data-cat="snack">
+              <div class="meal-img m6">
+                <div class="meal-tag mt-veg">🌿 Vegan</div>
+                <div style="position:absolute;bottom:8px;right:8px;font-size:20px">🫙</div>
+              </div>
+              <div class="meal-body">
+                <div class="meal-name">Plateau Fruits & Smoothies</div>
+                <div class="meal-desc">Fruits de saison, 4 smoothies frais</div>
+                <div class="meal-footer">
+                  <div class="meal-price">22,00 € <span>/ plateau</span></div>
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+                    <span class="qty-num">0</span>
+                    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cart-panel">
+            <div class="card-title" style="margin-bottom:14px">🛒 Ma commande</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Salle Haussmann · Mar 4 mars · 12h30</div>
+            <div class="cart-item">
+              <span>Plateau Croissants x1</span>
+              <span style="font-weight:700">18,00 €</span>
+            </div>
+            <div class="cart-item">
+              <span>Sandwichs Mix x2</span>
+              <span style="font-weight:700">84,00 €</span>
+            </div>
+            <div class="cart-total">
+              <span>Total</span>
+              <span id="cart-total">102,00 €</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin:8px 0 14px">Commission Delizia (10%) : 10,20 €</div>
+            <button class="confirm-btn" onclick="confirmOrder()">Commander →</button>
+            <div style="font-size:10px;color:var(--muted);margin-top:10px;text-align:center">Livraison garantie en 30 min · Facturation centralisée</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MES RÉSERVATIONS ══ -->
+      <div class="page" id="page-mesresa">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Mes réservations — Mars 2026</div>
+            <button class="tb-btn primary" onclick="showPage('salles',document.querySelectorAll('.nav-item')[1])">+ Nouvelle réservation</button>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--teal)"></div>
+            <div style="flex:1">
+              <div class="act-text"><strong>Aujourd'hui 10h–12h</strong> · Salle Haussmann · Sprint Review Q1</div>
+              <div class="act-time">3e étage · La Défense · 5 participants</div>
+            </div>
+            <span class="badge b-free" style="margin-left:auto">Confirmée</span>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--gold)"></div>
+            <div style="flex:1">
+              <div class="act-text"><strong>Mer 5 mars 14h–16h</strong> · Bulle Calme A · Focus</div>
+              <div class="act-time">2e étage · La Défense · Solo</div>
+            </div>
+            <span class="badge b-free">Confirmée</span>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--blue)"></div>
+            <div style="flex:1">
+              <div class="act-text"><strong>Jeu 6 mars 9h–11h</strong> · Salle Madeleine · Comité RH</div>
+              <div class="act-time">1er étage · Boulogne · 8 participants</div>
+            </div>
+            <span class="badge b-pending">En attente</span>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--green)"></div>
+            <div style="flex:1">
+              <div class="act-text"><strong>Ven 7 mars · Journée</strong> · Bureau A4 · Flex office</div>
+              <div class="act-time">2e étage · La Défense · Rangée Fenêtre</div>
+            </div>
+            <span class="badge b-free">Confirmée</span>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--red)"></div>
+            <div style="flex:1">
+              <div class="act-text"><strong>Lun 10 mars 10h–12h</strong> · Salle Opéra · Kick-off projet</div>
+              <div class="act-time">4e étage · Saint-Denis · 12 participants</div>
+            </div>
+            <span class="badge b-free">Confirmée</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ADMIN ══ -->
+      <div class="page" id="page-admin">
+        <div class="stats-row" style="margin-bottom:20px">
+          <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-num">4</div>
+            <div class="stat-label">Sites actifs — IDF</div>
+            <div class="stat-trend">La Défense · Boulogne · Saint-Denis · Vincennes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-num">247</div>
+            <div class="stat-label">Utilisateurs actifs</div>
+            <div class="stat-trend up">↑ +12 ce mois</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-num">1<span>842</span></div>
+            <div class="stat-label">Réservations — Mars</div>
+            <div class="stat-trend up">↑ +23% vs fév.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💶</div>
+            <div class="stat-num">3<span>840€</span></div>
+            <div class="stat-label">Commissions repas — Mars</div>
+            <div class="stat-trend up">↑ Delizia · 384 commandes</div>
+          </div>
+        </div>
+
+        <div class="g2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Gestion des sites — Île-de-France</div></div>
+            <div class="occ-row">
+              <div class="occ-name">🏙️ La Défense</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:72%;background:var(--teal)"></div></div>
+              <div class="occ-pct">72%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🌆 Boulogne</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:58%;background:var(--blue)"></div></div>
+              <div class="occ-pct">58%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🏘️ Saint-Denis</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:41%;background:var(--gold)"></div></div>
+              <div class="occ-pct">41%</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name">🏛️ Vincennes</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:33%;background:#8B5CF6"></div></div>
+              <div class="occ-pct">33%</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Modules activés — Nexio Group</div></div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--teal)"></div>
+              <div><div class="act-text">✅ <strong>Salles & Espaces</strong> — Core</div><div class="act-time">12 salles · 4 sites</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--teal)"></div>
+              <div><div class="act-text">✅ <strong>Bureaux Flex</strong> — Actif</div><div class="act-time">80 postes · 4 étages</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--teal)"></div>
+              <div><div class="act-text">✅ <strong>Services Repas</strong> — Core</div><div class="act-time">Delizia Paris · partenaire actif</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot" style="background:var(--muted)"></div>
+              <div><div class="act-text">⭕ <strong>Coworking</strong> — Désactivé</div><div class="act-time"><span style="color:var(--teal);cursor:pointer">Activer ce module →</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Alertes & Anomalies</div>
+            <span class="badge b-busy">3 alertes</span>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--red)"></div>
+            <div><div class="act-text">⚠️ <strong>Salle Rivoli</strong> — Réservée sans check-in depuis 45 min (Boulogne)</div><div class="act-time">Libération automatique dans 15 min</div></div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--gold)"></div>
+            <div><div class="act-text">⚡ <strong>Site Saint-Denis</strong> — Taux d'occupation en baisse (−18% ce mois)</div><div class="act-time">Recommandation : réduire le nombre de bureaux réservables</div></div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot" style="background:var(--gold)"></div>
+            <div><div class="act-text">☕ <strong>Commande Delizia</strong> — Livraison en retard de 12 min (La Défense)</div><div class="act-time">Prestataire notifié automatiquement</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- MODAL RÉSERVATION -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-room-title">Réserver — Salle Haussmann</div>
+    <div id="modal-room-sub" style="font-size:12px;color:var(--muted);margin-bottom:16px">3e étage · 8 pers · Visio + Écran</div>
+
+    <label class="f-label">Objet de la réunion</label>
+    <input class="f-input" type="text" placeholder="Ex: Sprint Review Q1" />
+
+    <div class="f-row">
+      <div>
+        <label class="f-label">Date</label>
+        <input class="f-input" type="text" value="Mardi 4 mars 2026" readonly />
+      </div>
+      <div>
+        <label class="f-label">Durée</label>
+        <select class="f-select">
+          <option>1h (10h00–11h00)</option>
+          <option selected>2h (10h00–12h00)</option>
+          <option>3h (10h00–13h00)</option>
+        </select>
+      </div>
+    </div>
+
+    <label class="f-label">Participants</label>
+    <div class="chips">
+      <div class="chip"><div class="chip-av">SC</div>Sophie C.</div>
+      <div class="chip"><div class="chip-av">TG</div>Thomas G.</div>
+      <div class="chip"><div class="chip-av">AL</div>Aline L.</div>
+      <div class="add-chip">+ Ajouter</div>
+    </div>
+
+    <div class="meal-toggle" onclick="toggleMeal()">
+      <div>
+        <div class="mt-text">☕ Commander un repas pour cette réunion ?</div>
+        <div class="mt-sub">Livraison Delizia · 30 min · La Défense</div>
+      </div>
+      <div class="toggle" id="meal-toggle-btn"></div>
+    </div>
+
+    <div class="summary">
+      <div class="sum-row"><span>Salle Haussmann · 3e étage</span><strong>Inclus</strong></div>
+      <div class="sum-row"><span>10h00 – 12h00</span><strong>2h</strong></div>
+      <div class="sum-row"><span>3 participants</span><strong>—</strong></div>
+      <div class="sum-total"><span>Aucun frais de réservation</span><strong>Gratuit</strong></div>
+    </div>
+
+    <button class="confirm-btn" onclick="confirmBooking()">✓ Confirmer la réservation</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ <span id="toast-msg"></span></div>
+
+<script>
+const sites = [
+  {name:'Paris – La Défense', short:'La Défense'},
+  {name:'Boulogne-Billancourt', short:'Boulogne'},
+  {name:'Saint-Denis', short:'Saint-Denis'},
+  {name:'Vincennes', short:'Vincennes'}
+];
+let siteIdx = 0;
+
+function cycleSite(){
+  siteIdx = (siteIdx+1) % sites.length;
+  const s = sites[siteIdx];
+  document.getElementById('site-name').textContent = s.name;
+  const s2 = document.getElementById('site-name2');
+  if(s2) s2.textContent = s.short;
+  document.getElementById('co-site-label').textContent = '📍 '+s.name;
+  document.getElementById('tb-sub').textContent = 'Mardi 4 mars 2026 · Site '+s.name;
+  document.getElementById('floor-title').textContent = 'Plan · 2e étage — Open Space Nord · '+s.short;
+  showToast('Site changé → '+s.name);
+}
+
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {
+    dashboard:'Tableau de bord', salles:'Salles de réunion',
+    bureaux:'Bureaux flex', repas:'Commander repas',
+    mesresa:'Mes réservations', admin:'Administration'
+  };
+  document.getElementById('tb-title').textContent = titles[id]||id;
+}
+
+function toggleSlot(el){
+  if(el.classList.contains('taken')) return;
+  el.classList.toggle('sel');
+}
+
+function selectDate(el){
+  document.querySelectorAll('#page-salles [onclick="selectDate(this)"]').forEach(d=>{
+    d.style.background='var(--off)'; d.style.borderColor='var(--border)';
+    d.querySelectorAll('div').forEach((c,i)=>{c.style.color = i===0?'var(--muted)':'var(--text)'});
+  });
+  el.style.background='var(--navy)'; el.style.borderColor='var(--navy)';
+  el.querySelectorAll('div').forEach(c=>c.style.color='white');
+}
+
+function selectFloor(el, floor){
+  document.querySelectorAll('.floor-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const labels = {2:'2e étage — Open Space Nord',3:'3e étage — Open Space Sud',4:'4e étage — Direction'};
+  document.getElementById('floor-title').textContent = 'Plan · '+labels[floor]+' · '+sites[siteIdx].short;
+}
+
+function selDesk(el, id){
+  if(el.classList.contains('d-taken')||el.classList.contains('d-mine')||el.classList.contains('d-wall')||el.classList.contains('d-win')) return;
+  document.querySelectorAll('.d-sel').forEach(d=>{d.classList.remove('d-sel');d.classList.add('d-free')});
+  el.classList.remove('d-free'); el.classList.add('d-sel');
+  document.getElementById('desk-selected-name').textContent = 'Bureau '+id+' · Rangée '+({'A':'Fenêtre','B':'Centrale','C':'Centrale','D':'Sud'}[id[0]]||'');
+}
+
+function confirmDesk(){
+  closeModal();
+  showToast('Bureau réservé avec succès ! Confirmation envoyée par email.');
+}
+
+function openModal(name, sub){
+  document.getElementById('modal-room-title').textContent = 'Réserver — '+name;
+  document.getElementById('modal-room-sub').textContent = sub;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function closeModalOutside(e){ if(e.target===document.getElementById('modal')) closeModal(); }
+
+let mealOn = true;
+function toggleMeal(){
+  mealOn = !mealOn;
+  document.getElementById('meal-toggle-btn').classList.toggle('off', !mealOn);
+}
+
+function confirmBooking(){
+  closeModal();
+  showToast('Réservation confirmée ! Invitation envoyée aux participants.');
+}
+
+function confirmOrder(){
+  showToast('Commande envoyée à Delizia · Livraison prévue 12h30 ✓');
+}
+
+function filterMeals(el, cat){
+  document.querySelectorAll('.meal-cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.meal-card').forEach(card=>{
+    card.style.display = (cat==='all'||card.dataset.cat===cat) ? 'block' : 'none';
+  });
+}
+
+function changeQty(btn, delta){
+  const ctrl = btn.parentElement;
+  const numEl = ctrl.querySelector('.qty-num');
+  let val = parseInt(numEl.textContent)+delta;
+  if(val<0) val=0;
+  numEl.textContent = val;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
