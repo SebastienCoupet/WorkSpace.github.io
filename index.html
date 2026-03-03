@@ -114,8 +114,8 @@ nav {
   font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
   text-transform: uppercase; color: var(--teal);
   margin-bottom: 32px; position: relative; z-index: 1;
-  animation: fadeUp 0.6s ease both;
-  animation-fill-mode: both;
+  
+  
 }
 .hero-badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -126,7 +126,7 @@ nav {
   font-weight: 400; line-height: 1.05;
   color: var(--white); letter-spacing: -2px;
   position: relative; z-index: 1;
-  animation: fadeUp 0.7s 0.1s ease both;
+  
 }
 .hero-title em { font-style: italic; color: var(--teal); }
 .hero-title .line2 { display: block; }
@@ -136,14 +136,14 @@ nav {
   color: rgba(255,255,255,0.45); max-width: 580px;
   margin: 28px auto 0; line-height: 1.7;
   position: relative; z-index: 1;
-  animation: fadeUp 0.7s 0.2s ease both;
+  
 }
 
 .hero-actions {
   display: flex; gap: 14px; justify-content: center;
   margin-top: 44px; position: relative; z-index: 1;
   flex-wrap: wrap;
-  animation: fadeUp 0.7s 0.3s ease both;
+  
 }
 .btn-hero-primary {
   padding: 16px 32px; background: var(--teal); color: var(--navy);
@@ -166,7 +166,7 @@ nav {
   padding-top: 48px;
   border-top: 1px solid rgba(255,255,255,0.06);
   flex-wrap: wrap;
-  animation: fadeUp 0.7s 0.4s ease both;
+  
 }
 .hero-stat-num {
   font-family: 'Instrument Serif', serif;
@@ -620,16 +620,7 @@ footer {
 /* ══════════════════════════════════════
    SCROLL REVEAL
 ══════════════════════════════════════ */
-.reveal {
-  opacity: 1; transform: translateY(0);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.hidden { opacity: 0; transform: translateY(30px); }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
+/* animations supprimées */
 </style>
 </head>
 <body>
@@ -681,36 +672,36 @@ footer {
 
 <!-- ══ PROBLÈME ══ -->
 <section id="probleme">
-  <div class="section-eyebrow reveal">Le constat</div>
-  <h2 class="section-title reveal reveal-delay-1">Vos espaces de travail<br><em>vous coûtent cher</em> sans le savoir.</h2>
-  <p class="section-desc reveal reveal-delay-2">75% des entreprises françaises pratiquent le travail hybride. Pourtant, la gestion des espaces reste chaotique, coûteuse et frustrante.</p>
+  <div class="section-eyebrow">Le constat</div>
+  <h2 class="section-title">Vos espaces de travail<br><em>vous coûtent cher</em> sans le savoir.</h2>
+  <p class="section-desc">75% des entreprises françaises pratiquent le travail hybride. Pourtant, la gestion des espaces reste chaotique, coûteuse et frustrante.</p>
 
   <div class="pb-grid">
     <div>
       <div class="pb-cards">
-        <div class="pb-card reveal reveal-delay-1">
+        <div class="pb-card">
           <div class="pb-icon">🏢</div>
           <div class="pb-title">Salles fantômes</div>
           <div class="pb-text">Des salles réservées mais vides. Impossible pour vos équipes de trouver un espace disponible en temps réel.</div>
         </div>
-        <div class="pb-card reveal reveal-delay-2">
+        <div class="pb-card">
           <div class="pb-icon">💺</div>
           <div class="pb-title">Chaos en flex office</div>
           <div class="pb-text">Vos collaborateurs arrivent sans savoir s'il reste un bureau libre. Résultat : tensions et perte de temps.</div>
         </div>
-        <div class="pb-card reveal reveal-delay-3">
+        <div class="pb-card">
           <div class="pb-icon">🌐</div>
           <div class="pb-title">Multi-sites non coordonnés</div>
           <div class="pb-text">Sur 3 sites, chacun a ses propres règles. Aucune visibilité globale, aucune donnée d'occupation fiable.</div>
         </div>
-        <div class="pb-card reveal reveal-delay-4">
+        <div class="pb-card">
           <div class="pb-icon">☕</div>
           <div class="pb-title">Services désorganisés</div>
           <div class="pb-text">Commander un repas pour une réunion implique 4 intermédiaires et 3 outils différents.</div>
         </div>
       </div>
     </div>
-    <div class="reveal reveal-delay-2">
+    <div class="">
       <div class="section-eyebrow">L'enjeu financier</div>
       <h3 class="section-title" style="font-size:36px">Un bureau inutilisé coûte <em>400 €/mois.</em></h3>
       <p class="section-desc" style="margin-top:16px">Pour une ETI de 200 personnes avec 20 salles, le coût des espaces sous-utilisés peut dépasser <strong>96 000 €/an</strong>. WorkSpace+ rend ces coûts visibles — et les réduit.</p>
@@ -735,12 +726,12 @@ footer {
 
 <!-- ══ SOLUTION ══ -->
 <section id="solution">
-  <div class="section-eyebrow reveal">La solution</div>
-  <h2 class="section-title reveal reveal-delay-1">4 modules. <em>Un seul outil.</em><br>Zéro contrainte.</h2>
-  <p class="section-desc reveal reveal-delay-2">Activez uniquement les modules dont vous avez besoin. WorkSpace+ s'adapte à votre organisation, pas l'inverse.</p>
+  <div class="section-eyebrow">La solution</div>
+  <h2 class="section-title">4 modules. <em>Un seul outil.</em><br>Zéro contrainte.</h2>
+  <p class="section-desc">Activez uniquement les modules dont vous avez besoin. WorkSpace+ s'adapte à votre organisation, pas l'inverse.</p>
 
   <div class="modules-grid">
-    <div class="module-card reveal reveal-delay-1">
+    <div class="module-card">
       <div class="module-tag tag-core">Core — Inclus</div>
       <div class="module-icon">🏢</div>
       <div class="module-name">Salles & Espaces</div>
@@ -752,7 +743,7 @@ footer {
         <div class="module-feature">Check-in QR code</div>
       </div>
     </div>
-    <div class="module-card reveal reveal-delay-2">
+    <div class="module-card">
       <div class="module-tag tag-opt">Optionnel</div>
       <div class="module-icon">💺</div>
       <div class="module-name">Bureaux Flex</div>
@@ -764,7 +755,7 @@ footer {
         <div class="module-feature">Vue équipe en temps réel</div>
       </div>
     </div>
-    <div class="module-card reveal reveal-delay-3">
+    <div class="module-card">
       <div class="module-tag tag-opt">Optionnel</div>
       <div class="module-icon">🌐</div>
       <div class="module-name">Coworking Partenaire</div>
@@ -776,7 +767,7 @@ footer {
         <div class="module-feature">Gestion multi-villes</div>
       </div>
     </div>
-    <div class="module-card reveal reveal-delay-4">
+    <div class="module-card">
       <div class="module-tag tag-core">Core — Inclus</div>
       <div class="module-icon">☕</div>
       <div class="module-name">Services Repas</div>
@@ -790,7 +781,7 @@ footer {
     </div>
   </div>
 
-  <div class="solution-pillars reveal" style="margin-top:48px">
+  <div class="solution-pillars" style="margin-top:48px">
     <div class="pillar"><span>✓</span> Non intrusif</div>
     <div class="pillar"><span>✓</span> 100% paramétrable</div>
     <div class="pillar"><span>✓</span> Multi-sites</div>
@@ -802,28 +793,28 @@ footer {
 
 <!-- ══ POURQUOI WS+ ══ -->
 <section id="pourquoi">
-  <div class="section-eyebrow reveal">Pourquoi WorkSpace+</div>
-  <h2 class="section-title reveal reveal-delay-1">La seule solution <em>sans abonnement</em><br>sur le marché français.</h2>
+  <div class="section-eyebrow">Pourquoi WorkSpace+</div>
+  <h2 class="section-title">La seule solution <em>sans abonnement</em><br>sur le marché français.</h2>
 
   <div class="avantages-grid">
-    <div class="avantage reveal reveal-delay-1">
+    <div class="avantage">
       <div class="avantage-num">01</div>
       <div class="avantage-title">Vous payez une fois, c'est tout</div>
       <div class="avantage-text">Pas d'abonnement mensuel, pas de frais par utilisateur. Vous achetez la solution, elle vous appartient. Maintenance optionnelle selon vos besoins.</div>
     </div>
-    <div class="avantage reveal reveal-delay-2">
+    <div class="avantage">
       <div class="avantage-num">02</div>
       <div class="avantage-title">Modulable selon votre réalité</div>
       <div class="avantage-text">Vous n'utilisez pas le flex office ? Ne payez pas ce module. WorkSpace+ s'installe sur ce dont vous avez besoin, et évolue avec vous.</div>
     </div>
-    <div class="avantage reveal reveal-delay-3">
+    <div class="avantage">
       <div class="avantage-num">03</div>
       <div class="avantage-title">Services repas uniques sur le marché</div>
       <div class="avantage-text">Aucun concurrent français n'intègre nativement la commande de repas à la réservation d'espace. WorkSpace+ est le seul à le proposer.</div>
     </div>
   </div>
 
-  <div class="vs-banner reveal" style="margin-top:48px">
+  <div class="vs-banner" style="margin-top:48px">
     <div class="vs-concurrents">
       <div class="vs-col-title">Concurrents (Witco, Moffi, Deskare…)</div>
       <div class="vs-item"><span class="vs-x">✗</span> Abonnement mensuel par utilisateur</div>
@@ -848,12 +839,12 @@ footer {
 
 <!-- ══ TARIFS ══ -->
 <section id="tarifs">
-  <div class="section-eyebrow reveal">Tarifs</div>
-  <h2 class="section-title reveal reveal-delay-1">Simple. Transparent.<br><em>Sans surprise.</em></h2>
-  <p class="section-desc reveal reveal-delay-2">Un tarif unique adapté à votre taille, payé une seule fois. Aucun frais caché, aucun abonnement.</p>
+  <div class="section-eyebrow">Tarifs</div>
+  <h2 class="section-title">Simple. Transparent.<br><em>Sans surprise.</em></h2>
+  <p class="section-desc">Un tarif unique adapté à votre taille, payé une seule fois. Aucun frais caché, aucun abonnement.</p>
 
   <div class="tarifs-grid">
-    <div class="tarif-card reveal reveal-delay-1">
+    <div class="tarif-card">
       <div class="tarif-icon">🏠</div>
       <div class="tarif-name">PME</div>
       <div class="tarif-target">Jusqu'à 250 collaborateurs</div>
@@ -868,7 +859,7 @@ footer {
       <button class="btn-tarif btn-tarif-outline" onclick="document.getElementById('contact').scrollIntoView()">Nous contacter</button>
     </div>
 
-    <div class="tarif-card featured reveal reveal-delay-2">
+    <div class="tarif-card featured">
       <div class="tarif-badge">Le plus choisi</div>
       <div class="tarif-icon">🏢</div>
       <div class="tarif-name">ETI</div>
@@ -885,7 +876,7 @@ footer {
       <button class="btn-tarif btn-tarif-primary" onclick="document.getElementById('contact').scrollIntoView()">Demander une démo →</button>
     </div>
 
-    <div class="tarif-card reveal reveal-delay-3">
+    <div class="tarif-card">
       <div class="tarif-icon">🌐</div>
       <div class="tarif-name">Grand Groupe</div>
       <div class="tarif-target">5 000+ collaborateurs</div>
@@ -901,7 +892,7 @@ footer {
     </div>
   </div>
 
-  <div class="commissions-note reveal">
+  <div class="commissions-note">
     <div class="commissions-note-icon">💡</div>
     <div>
       <div class="commissions-note-title">Maintenance & commissions — optionnels</div>
@@ -912,34 +903,34 @@ footer {
 
 <!-- ══ ROI ══ -->
 <section id="roi">
-  <div class="section-eyebrow reveal">Retour sur investissement</div>
-  <h2 class="section-title reveal reveal-delay-1">Rentable <em>dès la première année.</em></h2>
-  <p class="section-desc reveal reveal-delay-2">Des chiffres concrets, basés sur les données réelles de nos analyses de marché.</p>
+  <div class="section-eyebrow">Retour sur investissement</div>
+  <h2 class="section-title">Rentable <em>dès la première année.</em></h2>
+  <p class="section-desc">Des chiffres concrets, basés sur les données réelles de nos analyses de marché.</p>
 
   <div class="roi-grid">
-    <div class="roi-card reveal reveal-delay-1">
+    <div class="roi-card">
       <div class="roi-num" style="color:var(--teal)">30%</div>
       <div class="roi-label">Salles libérées</div>
       <div class="roi-sub">Grâce au check-in automatique et à la libération en cas d'absence</div>
     </div>
-    <div class="roi-card reveal reveal-delay-2">
+    <div class="roi-card">
       <div class="roi-num" style="color:var(--gold)">2h</div>
       <div class="roi-label">Gagnées / semaine</div>
       <div class="roi-sub">Par collaborateur en flex office grâce à la visibilité temps réel</div>
     </div>
-    <div class="roi-card reveal reveal-delay-3">
+    <div class="roi-card">
       <div class="roi-num" style="color:#A78BFA">−20%</div>
       <div class="roi-label">Déplacements inutiles</div>
       <div class="roi-sub">Les collaborateurs savent où aller avant d'arriver au bureau</div>
     </div>
-    <div class="roi-card reveal reveal-delay-4">
+    <div class="roi-card">
       <div class="roi-num" style="color:var(--teal)">ROI</div>
       <div class="roi-label">Positif en moins de 6 mois</div>
       <div class="roi-sub">Pour une ETI de 200 personnes avec 20 espaces gérés</div>
     </div>
   </div>
 
-  <div class="roi-example reveal">
+  <div class="roi-example">
     <div>
       <div class="roi-ex-title">Exemple concret — ETI 300 collaborateurs, 3 sites, 20 salles</div>
       <div class="roi-ex-text">En appliquant WorkSpace+ sur une organisation typique de 300 personnes réparties sur 3 sites avec 20 espaces de réunion, voici les économies générées dès la première année d'utilisation.</div>
@@ -967,11 +958,11 @@ footer {
 
 <!-- ══ CONFIANCE ══ -->
 <section id="confiance">
-  <div class="section-eyebrow reveal">Ils nous font confiance</div>
-  <h2 class="section-title reveal reveal-delay-1">Ce que disent nos <em>premiers clients.</em></h2>
+  <div class="section-eyebrow">Ils nous font confiance</div>
+  <h2 class="section-title">Ce que disent nos <em>premiers clients.</em></h2>
 
   <div class="trust-grid">
-    <div class="trust-card reveal reveal-delay-1">
+    <div class="trust-card">
       <div class="trust-stars">★★★★★</div>
       <div class="trust-quote">"</div>
       <div class="trust-text">WorkSpace+ a transformé notre gestion du flex office. En 3 mois, nous avons récupéré 8 bureaux qui étaient systématiquement vides. L'outil est intuitif et nos équipes l'ont adopté naturellement.</div>
@@ -983,7 +974,7 @@ footer {
         </div>
       </div>
     </div>
-    <div class="trust-card reveal reveal-delay-2">
+    <div class="trust-card">
       <div class="trust-stars">★★★★★</div>
       <div class="trust-quote">"</div>
       <div class="trust-text">Ce qui nous a convaincus, c'est l'absence d'abonnement. Nos prestataires habituels nous facturaient 4 € par utilisateur par mois. Avec WorkSpace+, on a payé une fois et c'est réglé.</div>
@@ -995,7 +986,7 @@ footer {
         </div>
       </div>
     </div>
-    <div class="trust-card reveal reveal-delay-3">
+    <div class="trust-card">
       <div class="trust-stars">★★★★★</div>
       <div class="trust-quote">"</div>
       <div class="trust-text">Le module repas est une vraie valeur ajoutée. On organise des sessions de travail intensif et pouvoir commander le petit-déjeuner directement depuis la réservation de salle, c'est un gain de temps énorme.</div>
@@ -1096,19 +1087,7 @@ footer {
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── SCROLL REVEAL ──
-document.querySelectorAll('.reveal').forEach(el => {
-  el.classList.add('hidden');
-});
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.remove('hidden');
-      e.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.05 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// animations supprimées
 
 // ── NAV SCROLL ──
 window.addEventListener('scroll', () => {
