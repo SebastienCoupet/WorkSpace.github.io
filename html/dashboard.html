@@ -204,6 +204,10 @@ html,body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);backgrou
 .chip-av{width:16px;height:16px;border-radius:50%;background:var(--blue);color:white;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .add-chip{display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:var(--light);border:1.5px dashed var(--border);font-size:10px;color:var(--muted);cursor:pointer;transition:all .15s}
 .add-chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip-ext{background:#fef3c7;color:#d97706}.chip-ext .chip-av{background:#d97706}
+.chip-rm{cursor:pointer;opacity:.45;margin-left:3px;font-size:12px;line-height:1}.chip-rm:hover{opacity:1}
+.pdrop-item{padding:10px 14px;cursor:pointer;font-size:12px;font-weight:500;border-bottom:1px solid var(--border);color:var(--text)}.pdrop-item:last-child{border-bottom:none}.pdrop-item:hover{background:var(--light)}
+.pdrop-ext{color:var(--gold);font-style:italic}
 .meal-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#e8edff;border-radius:10px;margin-bottom:12px;border:1.5px solid rgba(26,60,255,.2);cursor:pointer}
 .mt-text{font-size:12px;font-weight:600;color:var(--blue)}
 .mt-sub{font-size:10px;color:rgba(26,60,255,.5)}
@@ -497,7 +501,11 @@ html,body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);backgrou
       <div><label class="f-label">Durée</label><select class="f-select" id="modal-duree"><option>30 min</option><option>1h</option><option selected>2h</option><option>3h</option><option>4h</option><option>Journée</option></select></div>
     </div>
     <label class="f-label">Participants</label>
-    <div class="chips"><div class="chip"><div class="chip-av">SC</div>Sophie C.</div><div class="chip"><div class="chip-av">TG</div>Thomas G.</div><div class="chip"><div class="chip-av">AL</div>Aline L.</div><div class="add-chip">+ Ajouter</div></div>
+    <div class="chips" id="participants-chips"></div>
+    <div style="position:relative;margin-bottom:12px">
+      <input class="f-input" id="participant-input" type="text" placeholder="Rechercher un collègue ou saisir un e-mail externe…" autocomplete="off" oninput="onParticipantInput(this)" onblur="setTimeout(()=>{const d=document.getElementById('participant-dropdown');if(d)d.style.display='none'},200)" style="margin-bottom:0" />
+      <div id="participant-dropdown" style="display:none;position:absolute;top:calc(100% + 2px);left:0;right:0;background:white;border:1.5px solid var(--border);border-radius:9px;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.12);max-height:200px;overflow-y:auto"></div>
+    </div>
     <div class="visibility-row">
       <div class="vr-label">👁️ Visibilité de la réservation</div>
       <div class="vt-pills">

@@ -92,13 +92,107 @@ async function loadReservations() {
   });
 }
 
+function frenchError(msg) {
+  if (!msg) return 'Erreur inconnue.';
+  if (msg.includes('does not exist'))      return 'La table n\'existe pas dans Supabase.';
+  if (msg.includes('permission denied') || msg.includes('new row violates')) return 'Accès refusé — vérifiez les règles RLS dans Supabase.';
+  if (msg.includes('JWT') || msg.includes('token')) return 'Session expirée, veuillez vous reconnecter.';
+  if (msg.includes('duplicate') || msg.includes('unique')) return 'Cette réservation existe déjà.';
+  if (msg.includes('network') || msg.includes('fetch')) return 'Erreur réseau — vérifiez votre connexion.';
+  if (msg.includes('column'))              return 'Colonne manquante dans la table — vérifiez le schéma Supabase.';
+  return msg;
+}
+
 async function saveReservation(data) {
   const { error } = await sb.from('reservations').insert(data);
   if (error) {
-    showToast('❌ Erreur : ' + error.message);
+    showToast('❌ ' + frenchError(error.message));
     return false;
   }
   return true;
+}
+
+// ─── PARTICIPANTS ──────────────────────────────────────────────────────────────
+let participants = [];
+
+function initParticipants() {
+  participants = currentUser
+    ? [{ name: getUserName(), email: currentUser.email, external: false }]
+    : [];
+  renderParticipants();
+  const input = document.getElementById('participant-input');
+  if (input) input.value = '';
+}
+
+function renderParticipants() {
+  const container = document.getElementById('participants-chips');
+  if (!container) return;
+  container.innerHTML = '';
+  participants.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (p.external ? ' chip-ext' : '');
+    const av = document.createElement('div');
+    av.className = 'chip-av';
+    av.textContent = p.name.split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0, 2);
+    chip.appendChild(av);
+    chip.appendChild(document.createTextNode(p.external ? p.email : p.name));
+    if (p.email !== currentUser?.email) {
+      const rm = document.createElement('span');
+      rm.className = 'chip-rm';
+      rm.textContent = '×';
+      rm.onmousedown = (e) => { e.preventDefault(); removeParticipant(p.email); };
+      chip.appendChild(rm);
+    }
+    container.appendChild(chip);
+  });
+}
+
+function addParticipant(name, email, external) {
+  if (participants.some(p => p.email === email)) return;
+  participants.push({ name, email, external });
+  renderParticipants();
+}
+
+function removeParticipant(email) {
+  participants = participants.filter(p => p.email !== email);
+  renderParticipants();
+}
+
+let _searchTimer;
+async function onParticipantInput(input) {
+  const q = input.value.trim();
+  const dropdown = document.getElementById('participant-dropdown');
+  clearTimeout(_searchTimer);
+  if (q.length < 2) { dropdown.style.display = 'none'; return; }
+
+  _searchTimer = setTimeout(async () => {
+    const { data } = await sb
+      .from('profiles')
+      .select('full_name, email')
+      .or(`full_name.ilike.%${q}%,email.ilike.%${q}%`)
+      .limit(6);
+
+    const results = (data || []).filter(u => !participants.some(p => p.email === u.email));
+    dropdown.innerHTML = '';
+
+    results.forEach(u => {
+      const item = document.createElement('div');
+      item.className = 'pdrop-item';
+      item.textContent = `${u.full_name} — ${u.email}`;
+      item.onmousedown = (e) => { e.preventDefault(); addParticipant(u.full_name, u.email, false); input.value = ''; dropdown.style.display = 'none'; };
+      dropdown.appendChild(item);
+    });
+
+    if (q.includes('@') && !participants.some(p => p.email === q)) {
+      const ext = document.createElement('div');
+      ext.className = 'pdrop-item pdrop-ext';
+      ext.textContent = `➕ Ajouter "${q}" comme externe`;
+      ext.onmousedown = (e) => { e.preventDefault(); addParticipant(q, q, true); input.value = ''; dropdown.style.display = 'none'; };
+      dropdown.appendChild(ext);
+    }
+
+    dropdown.style.display = dropdown.children.length ? 'block' : 'none';
+  }, 280);
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────────
@@ -163,6 +257,7 @@ function openModal(name, sub) {
   document.getElementById('modal-room-title').textContent = 'Réserver — ' + name;
   document.getElementById('modal-room-sub').textContent   = sub;
   document.getElementById('modal').classList.add('open');
+  initParticipants();
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
@@ -188,10 +283,13 @@ async function confirmBooking() {
   const dateFr   = formatDateFr(dateObj);
   const timeSlot = `${timeVal} · ${dureeVal}`;
 
+  const participantList = participants.map(p => p.external ? `${p.email} (ext.)` : p.name).join(', ');
+
   const ok = await saveReservation({
     type: 'salle', resource_id: currentRoom,
     user_name: isAnon ? null : getUserName(), is_anonymous: isAnon,
     date: dateVal, time_slot: timeSlot, objet,
+    participants: participantList,
     user_id: currentUser?.id
   });
 
