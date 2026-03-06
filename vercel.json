@@ -1,0 +1,9 @@
+{
+  "routes": [
+    { "src": "^/$", "dest": "/html/index.html" },
+    { "src": "^/demo$", "dest": "/html/demo.html" },
+    { "src": "^/auth$", "dest": "/html/auth.html" },
+    { "src": "^/dashboard$", "dest": "/html/dashboard.html" },
+    { "src": "^/(.*)$", "dest": "/$1" }
+  ]
+}
