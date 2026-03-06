@@ -22,8 +22,13 @@ if (monthEl) {
   monthEl.textContent = m.charAt(0).toUpperCase() + m.slice(1) + ' ' + TODAY.getFullYear();
 }
 
+const todayISO = TODAY.toISOString().split('T')[0];
+
 const modalDateEl = document.getElementById('modal-date');
-if (modalDateEl) modalDateEl.value = TODAY_LABEL;
+if (modalDateEl) modalDateEl.value = todayISO;
+
+const deskDateEl = document.getElementById('desk-date');
+if (deskDateEl) deskDateEl.value = todayISO;
 
 const dashDateSub = document.getElementById('dash-date-sub');
 if (dashDateSub) dashDateSub.textContent = 'Site Paris – La Défense · ' + TODAY_LABEL;
@@ -46,6 +51,8 @@ sb.auth.getSession().then(({ data }) => {
 
   const subEl = document.getElementById('tb-sub');
   if (subEl) subEl.textContent = `${TODAY_LABEL} · Bonjour ${firstName} 👋`;
+
+  loadReservations();
 });
 
 async function logout() {
@@ -59,13 +66,39 @@ function getUserName() {
   return currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
 }
 
+async function loadReservations() {
+  const { data, error } = await sb
+    .from('reservations')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.warn('loadReservations:', error.message); return; }
+  if (!data?.length) return;
+
+  const list = document.getElementById('resa-list');
+  const emptyState = list.querySelector('[style*="50px"]');
+  if (emptyState) emptyState.remove();
+
+  data.forEach(r => {
+    const dateObj = r.date ? new Date(r.date + 'T12:00:00') : null;
+    const dateFr  = dateObj ? formatDateFr(dateObj) : r.date;
+    addResaToList({
+      dot:   r.type === 'bureau' ? 'var(--green)' : 'var(--blue)',
+      title: `${dateFr} · ${r.time_slot || 'Journée'}`,
+      sub:   `${r.resource_id} · ${r.objet || 'Flex office'}`,
+      badge: 'b-free', label: 'Confirmée'
+    });
+  });
+}
+
 async function saveReservation(data) {
-  try {
-    const { error } = await sb.from('reservations').insert(data);
-    if (error) throw error;
-  } catch(e) {
-    console.warn('Réservation non sauvegardée :', e.message);
+  const { error } = await sb.from('reservations').insert(data);
+  if (error) {
+    showToast('❌ Erreur : ' + error.message);
+    return false;
   }
+  return true;
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────────
@@ -146,21 +179,27 @@ function setVisibility(mode) {
 }
 
 async function confirmBooking() {
-  const isAnon    = salleVisibilite === 'anon';
-  const objet     = document.querySelector('#modal .f-input[placeholder]')?.value.trim() || 'Réunion';
-  const dureeEl   = document.querySelector('#modal .f-select');
-  const dureeText = dureeEl ? dureeEl.options[dureeEl.selectedIndex].text : '1h';
+  const isAnon   = salleVisibilite === 'anon';
+  const objet    = document.querySelector('#modal .f-input[placeholder]')?.value.trim() || 'Réunion';
+  const dateVal  = document.getElementById('modal-date').value;
+  const timeVal  = document.getElementById('modal-time').value;
+  const dureeVal = document.getElementById('modal-duree').value;
+  const dateObj  = dateVal ? new Date(dateVal + 'T12:00:00') : TODAY;
+  const dateFr   = formatDateFr(dateObj);
+  const timeSlot = `${timeVal} · ${dureeVal}`;
 
-  await saveReservation({
+  const ok = await saveReservation({
     type: 'salle', resource_id: currentRoom,
     user_name: isAnon ? null : getUserName(), is_anonymous: isAnon,
-    date: TODAY_LABEL, time_slot: dureeText, objet,
+    date: dateVal, time_slot: timeSlot, objet,
     user_id: currentUser?.id
   });
 
+  if (!ok) return;
+
   addResaToList({
     dot: 'var(--blue)',
-    title: `${TODAY_LABEL} · ${dureeText}`,
+    title: `${dateFr} · ${timeSlot}`,
     sub:   `${currentRoom} · ${objet}`,
     badge: 'b-free', label: 'Confirmée'
   });
@@ -197,18 +236,23 @@ function setDeskVisibility(mode) {
 }
 
 async function reserverBureau() {
-  const isAnon = deskVisibilite === 'anon';
+  const isAnon  = deskVisibilite === 'anon';
+  const dateVal = document.getElementById('desk-date').value || TODAY.toISOString().split('T')[0];
+  const dateObj = new Date(dateVal + 'T12:00:00');
+  const dateFr  = formatDateFr(dateObj);
 
-  await saveReservation({
+  const ok = await saveReservation({
     type: 'bureau', resource_id: selectedDesk,
     user_name: isAnon ? null : getUserName(), is_anonymous: isAnon,
-    date: TODAY_LABEL, time_slot: 'Journée',
+    date: dateVal, time_slot: 'Journée',
     user_id: currentUser?.id
   });
 
+  if (!ok) return;
+
   addResaToList({
     dot: 'var(--green)',
-    title: `${TODAY_LABEL} · Journée`,
+    title: `${dateFr} · Journée`,
     sub:   `Bureau ${selectedDesk} · Flex office`,
     badge: 'b-free', label: 'Confirmée'
   });

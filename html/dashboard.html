@@ -384,13 +384,8 @@ html,body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);backgrou
               <div style="font-size:12px;font-weight:700;color:var(--navy);font-family:'Syne',sans-serif" id="desk-selected-name">Bureau A4 · Rangée Fenêtre</div>
               <div style="font-size:10px;color:var(--muted);margin-top:4px">2e étage · Open Space Nord</div>
             </div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Choisir une date</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-              <div style="padding:8px 12px;border-radius:8px;background:var(--navy);color:white;font-size:11px;font-weight:700;cursor:pointer">Mar 4</div>
-              <div style="padding:8px 12px;border-radius:8px;background:var(--light);border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer">Mer 5</div>
-              <div style="padding:8px 12px;border-radius:8px;background:var(--light);border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer">Jeu 6</div>
-              <div style="padding:8px 12px;border-radius:8px;background:var(--light);border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer">Ven 7</div>
-            </div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block">Choisir une date</label>
+            <input type="date" id="desk-date" class="f-input" style="margin-bottom:16px" />
             <div class="visibility-row" style="margin-bottom:12px">
               <div class="vr-label">👁️ Visibilité</div>
               <div class="vt-pills">
@@ -496,9 +491,10 @@ html,body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);backgrou
     <div id="modal-room-sub" style="font-size:12px;color:var(--muted);margin-bottom:16px">3e étage · 8 pers · Visio + Écran</div>
     <label class="f-label">Objet de la réunion</label>
     <input class="f-input" type="text" placeholder="Ex: Sprint Review Q1" />
-    <div class="f-row">
-      <div><label class="f-label">Date</label><input class="f-input" type="text" id="modal-date" readonly /></div>
-      <div><label class="f-label">Durée</label><select class="f-select"><option>1h (10h00–11h00)</option><option selected>2h (10h00–12h00)</option><option>3h (10h00–13h00)</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="f-label">Date</label><input class="f-input" type="date" id="modal-date" /></div>
+      <div><label class="f-label">Heure de début</label><select class="f-select" id="modal-time"><option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option><option selected>10:00</option><option>10:30</option><option>11:00</option><option>11:30</option><option>12:00</option><option>13:00</option><option>13:30</option><option>14:00</option><option>14:30</option><option>15:00</option><option>15:30</option><option>16:00</option><option>16:30</option><option>17:00</option><option>18:00</option></select></div>
+      <div><label class="f-label">Durée</label><select class="f-select" id="modal-duree"><option>30 min</option><option>1h</option><option selected>2h</option><option>3h</option><option>4h</option><option>Journée</option></select></div>
     </div>
     <label class="f-label">Participants</label>
     <div class="chips"><div class="chip"><div class="chip-av">SC</div>Sophie C.</div><div class="chip"><div class="chip-av">TG</div>Thomas G.</div><div class="chip"><div class="chip-av">AL</div>Aline L.</div><div class="add-chip">+ Ajouter</div></div>
