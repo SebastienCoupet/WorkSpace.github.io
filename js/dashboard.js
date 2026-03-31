@@ -104,9 +104,11 @@ function frenchError(msg) {
 }
 
 async function saveReservation(data) {
+  console.log('[saveReservation] payload:', data);
   const { error } = await sb.from('reservations').insert(data);
   if (error) {
-    showToast('❌ ' + frenchError(error.message));
+    console.error('[saveReservation] erreur Supabase:', error);
+    showToast('❌ ' + frenchError(error.message), 8000);
     return false;
   }
   return true;
@@ -456,9 +458,9 @@ function passerCommande() {
 }
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
-function showToast(msg) {
+function showToast(msg, duration = 3500) {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), duration);
 }
