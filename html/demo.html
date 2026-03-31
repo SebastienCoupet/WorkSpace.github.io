@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkSpace+ — Démo interactive</title>
+<title>SpaceFlow — Démo interactive · Nexio Group</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -13,10 +14,14 @@
   --text:#0a0f2e;--white:#fff;--gold:#f59e0b;--red:#ef4444;--green:#22c55e;
   --sidebar:240px;
 }
-html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);background:var(--light);overflow:hidden;display:flex;flex-direction:column}
+html,body{height:100%;font-family:'Outfit',sans-serif;color:var(--text);background:var(--light);overflow:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
-.shell{display:flex;flex:1;min-height:0}
+.demo-banner{position:fixed;top:0;left:0;right:0;z-index:2000;background:linear-gradient(90deg,var(--blue),var(--blue2));padding:7px 20px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;color:white;}
+.demo-banner a{color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1.5px solid rgba(255,255,255,0.3)}
+.demo-pill{background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:12px;font-size:10px;letter-spacing:.5px}
+
+.shell{display:flex;height:100vh;padding-top:33px}
 
 .sidebar{width:var(--sidebar);flex-shrink:0;background:var(--navy);display:flex;flex-direction:column;overflow-y:auto;}
 .sb-logo{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Syne',sans-serif;font-size:20px;color:white;font-weight:700;}
@@ -236,14 +241,18 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
 </head>
 <body>
 
+<div class="demo-banner">
+  <span>🎯 Mode démo — Données fictives · Nexio Group (Île-de-France)</span>
+  <span class="demo-pill">SpaceFlow Demo</span>
+  <a href="index.html">← Retour au site</a>
+</div>
 
-<div style="background:var(--blue);color:white;padding:10px 20px;font-size:13px;font-weight:600;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:16px">🎭 Mode démo — Données fictives · TechCorp SA &nbsp;·&nbsp; <a href="/auth" style="color:white;text-decoration:underline;font-weight:700">Se connecter pour accéder à votre espace →</a><a href="/" style="margin-left:8px;padding:5px 14px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:7px;color:white;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">✕ Quitter la démo</a></div>
 <div class="shell">
   <div class="sidebar">
-    <a href="/" class="sb-logo" style="text-decoration:none">Work<span>Space+</span></a>
+    <div class="sb-logo">Space<span>Flow</span></div>
     <div class="sb-company" onclick="cycleSite()">
-      <div class="co-logo" id="co-logo-initials">WS</div>
-      <div><div class="co-name" id="co-name">TechCorp SA</div><div class="co-site" id="co-site-label">📍 Paris – La Défense</div></div>
+      <div class="co-logo">NG</div>
+      <div><div class="co-name">Nexio Group</div><div class="co-site" id="co-site-label">📍 Paris – La Défense</div></div>
       <div class="co-chevron">⇅</div>
     </div>
     <div class="sb-section">Espaces</div>
@@ -261,7 +270,7 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
         <div class="u-name" id="user-display-name">Sophie C.</div>
         <div class="u-role">Office Manager</div>
       </div>
-      <a href="/auth" style="margin-left:auto;font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 8px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;white-space:nowrap">Connexion →</a>
+      <div title="Se déconnecter" onclick="logout()" style="cursor:pointer;font-size:14px;opacity:0.5;transition:opacity .15s;padding:4px" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">🚪</div>
     </div>
   </div>
 
@@ -269,7 +278,7 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
     <div class="topbar">
       <div>
         <div class="tb-title" id="tb-title">Tableau de bord</div>
-        <div class="tb-sub" id="tb-sub">Chargement...</div>
+        <div class="tb-sub" id="tb-sub">Mardi 4 mars 2026 · Bienvenue Sophie 👋</div>
       </div>
       <div class="tb-right">
         <div class="site-pill" onclick="cycleSite()"><div class="site-dot"></div><span id="site-name">Paris – La Défense</span> ▾</div>
@@ -282,42 +291,44 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-num" id="stat-salles">4</div><div class="stat-label">Salles disponibles</div><div class="stat-trend up">↑ 2 réservées cet après-midi</div></div>
-          <div class="stat-card"><div class="stat-icon">💺</div><div class="stat-num">18</div><div class="stat-label">Bureaux occupés</div><div class="stat-trend">Taux : 75% aujourd'hui</div></div>
-          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num">73<span>%</span></div><div class="stat-label">Présence sur site</div><div class="stat-trend up">↑ +8% vs hier</div></div>
-          <div class="stat-card"><div class="stat-icon">☕</div><div class="stat-num">3</div><div class="stat-label">Commandes repas</div><div class="stat-trend">Delizia · livraison 12h30</div></div>
+          <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-num">8<span>/12</span></div><div class="stat-label">Salles disponibles</div><div class="stat-trend up">↑ 2 libérées ce matin</div></div>
+          <div class="stat-card"><div class="stat-icon">💺</div><div class="stat-num">34<span>/80</span></div><div class="stat-label">Bureaux occupés</div><div class="stat-trend">Taux : 42% aujourd'hui</div></div>
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num">67<span>%</span></div><div class="stat-label">Présence sur site</div><div class="stat-trend up">↑ +8% vs hier</div></div>
+          <div class="stat-card"><div class="stat-icon">☕</div><div class="stat-num">3</div><div class="stat-label">Commandes repas</div><div class="stat-trend">Livraison à 12h30</div></div>
         </div>
         <div class="g73" style="margin-bottom:16px">
           <div class="card">
-            <div class="card-header"><div><div class="card-title">Occupation des salles aujourd'hui</div><div class="card-sub" id="dash-date-sub"></div></div></div>
-            <div class="occ-row"><div class="occ-name">Haussmann</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:85%;background:var(--red)"></div></div><div class="occ-pct">85%</div></div>
-            <div class="occ-row"><div class="occ-name">Bulle Calme A</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:90%;background:var(--red)"></div></div><div class="occ-pct">90%</div></div>
-            <div class="occ-row"><div class="occ-name">Salle Opéra</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:60%;background:var(--gold)"></div></div><div class="occ-pct">60%</div></div>
-            <div class="occ-row"><div class="occ-name">Salle Rivoli</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:40%;background:var(--blue)"></div></div><div class="occ-pct">40%</div></div>
-            <div class="occ-row"><div class="occ-name">Espace Collab B</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:30%;background:var(--blue)"></div></div><div class="occ-pct">30%</div></div>
-            <div class="occ-row"><div class="occ-name">Madeleine</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:20%;background:var(--green)"></div></div><div class="occ-pct">20%</div></div>
+            <div class="card-header"><div><div class="card-title">Occupation des salles aujourd'hui</div><div class="card-sub">Site Paris – La Défense · Mardi 4 mars</div></div></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <div style="padding:12px;background:var(--light);border-radius:10px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;font-family:'Syne',sans-serif">Salle Haussmann</div><div style="font-size:10px;color:var(--muted);margin-bottom:8px">8 pers · 3e ét.</div><div style="display:flex;gap:3px;flex-wrap:wrap"><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">9h</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">10h</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">11h ✓</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">15h ✓</span></div></div>
+              <div style="padding:12px;background:var(--light);border-radius:10px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;font-family:'Syne',sans-serif">Salle Rivoli</div><div style="font-size:10px;color:var(--muted);margin-bottom:8px">6 pers · 2e ét.</div><div style="display:flex;gap:3px;flex-wrap:wrap"><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">9h ✓</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">10h ✓</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">11h</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">14h ✓</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">15h</span></div></div>
+              <div style="padding:12px;background:var(--light);border-radius:10px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;font-family:'Syne',sans-serif">Salle Opéra</div><div style="font-size:10px;color:var(--muted);margin-bottom:8px">12 pers · 4e ét.</div><div style="display:flex;gap:3px;flex-wrap:wrap"><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">9h</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">10h</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">11h</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">16h ✓</span></div></div>
+              <div style="padding:12px;background:var(--light);border-radius:10px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;font-family:'Syne',sans-serif">Bulle Calme A</div><div style="font-size:10px;color:var(--muted);margin-bottom:8px">4 pers · 2e ét.</div><div style="display:flex;gap:3px;flex-wrap:wrap"><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">9h ✓</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">10h ✓</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">11h ✓</span><span style="padding:2px 5px;background:#fee2e2;color:#dc2626;border-radius:3px;font-size:9px;font-weight:600">14h</span><span style="padding:2px 5px;background:#dcfce7;color:#16a34a;border-radius:3px;font-size:9px;font-weight:600">15h ✓</span></div></div>
+            </div>
           </div>
           <div class="card">
             <div class="card-header"><div class="card-title">Activité récente</div></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Sophie C.</strong> a réservé Salle Haussmann</div><div class="act-time">Aujourd'hui · 10h–12h · Sprint Review Q2</div></div><span class="badge b-free">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1"><div class="act-text"><strong>Thomas G.</strong> a réservé Bureau B3</div><div class="act-time">Aujourd'hui · Journée entière</div></div><span class="badge b-free">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div style="flex:1"><div class="act-text"><strong>Aline L.</strong> a commandé Plateau Croissants</div><div class="act-time">Réunion RH · Livraison 10h00</div></div><span class="badge b-soon">En cours</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Équipe Design</strong> — Salle Opéra réservée</div><div class="act-time">Aujourd'hui · 9h–11h · Workshop UX</div></div><span class="badge b-free">Confirmée</span></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">Thomas G. a réservé <strong>Salle Haussmann</strong> — 14h à 16h</div><div class="act-time">Il y a 12 min</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div><div class="act-text">Commande repas confirmée — <strong>3 plateaux Delizia</strong></div><div class="act-time">Il y a 28 min</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div><div class="act-text">Sara C. a choisi bureau <strong>A4</strong> — Open space Nord</div><div class="act-time">Il y a 45 min</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:#8B5CF6"></div><div><div class="act-text">Salle Opéra libérée automatiquement (absence)</div><div class="act-time">Il y a 1h02</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--red)"></div><div><div class="act-text">Alerte : Salle Rivoli réservée sans check-in</div><div class="act-time">Il y a 1h30</div></div></div>
           </div>
         </div>
         <div class="g2">
           <div class="card">
             <div class="card-header"><div class="card-title">Taux d'occupation par site — Cette semaine</div></div>
-            <div class="occ-row"><div class="occ-name">🏙️ La Défense</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:73%;background:var(--blue)"></div></div><div class="occ-pct">73%</div></div>
-            <div class="occ-row"><div class="occ-name">🏢 Boulogne</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:45%;background:var(--blue)"></div></div><div class="occ-pct">45%</div></div>
-            <div class="occ-row"><div class="occ-name">🏗️ Saint-Denis</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:38%;background:var(--blue)"></div></div><div class="occ-pct">38%</div></div>
-            <div class="occ-row"><div class="occ-name">🌳 Vincennes</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:61%;background:var(--blue)"></div></div><div class="occ-pct">61%</div></div>
+            <div class="occ-row"><div class="occ-name">🏙️ La Défense</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:72%;background:var(--blue)"></div></div><div class="occ-pct">72%</div></div>
+            <div class="occ-row"><div class="occ-name">🌆 Boulogne</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:58%;background:#4a6fff"></div></div><div class="occ-pct">58%</div></div>
+            <div class="occ-row"><div class="occ-name">🏘️ Saint-Denis</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:41%;background:var(--gold)"></div></div><div class="occ-pct">41%</div></div>
+            <div class="occ-row"><div class="occ-name">🏛️ Vincennes</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:33%;background:#8B5CF6"></div></div><div class="occ-pct">33%</div></div>
           </div>
           <div class="card">
             <div class="card-header"><div class="card-title">Prochaines réservations</div></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Salle Haussmann</strong> · Sprint Review Q2</div><div class="act-time">Demain · 10h00–12h00</div></div><span class="badge b-free">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1"><div class="act-text"><strong>Bureau A4</strong> · Flex office</div><div class="act-time">Mercredi · Journée</div></div><span class="badge b-free">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Salle Rivoli</strong> · Comité de direction</div><div class="act-time">Jeudi · 14h00–16h00</div></div><span class="badge b-pending">En attente</span></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text"><strong>10h00</strong> · Salle Haussmann · Sprint review</div><div class="act-time">Sophie C. + 4 personnes</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:#4a6fff"></div><div><div class="act-text"><strong>11h30</strong> · Déjeuner Delizia · 3 plateaux</div><div class="act-time">Livraison salle Haussmann</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div><div class="act-text"><strong>14h00</strong> · Salle Opéra · Comité de direction</div><div class="act-time">12 participants · Site La Défense</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div><div class="act-text"><strong>16h00</strong> · Bulle Calme B · Focus time</div><div class="act-time">Thomas G. · 2h</div></div></div>
           </div>
         </div>
       </div>
@@ -342,11 +353,11 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
           <div onclick="selectDate(this)" style="flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--light);border:1.5px solid var(--border);text-align:center;cursor:pointer;min-width:56px"><div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase">Ven</div><div style="font-size:14px;font-weight:700;color:var(--text)">7</div></div>
         </div>
         <div class="rooms-grid">
-          <div class="room-card" onclick="openModal('Salle Haussmann','3e étage · 8 pers · Visio + Écran')"><div class="room-img ri1"><span class="badge b-free">Libre</span><span class="room-cap">👥 8</span></div><div class="room-body"><div class="room-name">Salle Haussmann</div><div class="room-info">3e étage · 🎥 Visio · 🖥️ Écran · ☕ Repas</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
-          <div class="room-card" onclick="openModal('Salle Rivoli','2e étage · 6 pers · Calme')"><div class="room-img ri2"><span class="badge b-free">Libre</span><span class="room-cap">👥 6</span></div><div class="room-body"><div class="room-name">Salle Rivoli</div><div class="room-info">2e étage · 🔇 Calme · 🖥️ Écran</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div></div></div></div>
-          <div class="room-card" onclick="openModal('Salle Opéra','4e étage · 12 pers · Projecteur')"><div class="room-img ri3"><span class="badge b-free">Libre</span><span class="room-cap">👥 12</span></div><div class="room-body"><div class="room-name">Salle Opéra</div><div class="room-info">4e étage · 🎥 Visio · 📽️ Projecteur</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
+          <div class="room-card" onclick="openModal('Salle Haussmann','3e étage · 8 pers · Visio + Écran')"><div class="room-img ri1"><span class="badge b-free">Libre</span><span class="room-cap">👥 8</span></div><div class="room-body"><div class="room-name">Salle Haussmann</div><div class="room-info">3e étage · 🎥 Visio · 🖥️ Écran · ☕ Repas</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot sel" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot sel" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot taken" data-user="Marc D.">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
+          <div class="room-card" onclick="openModal('Salle Rivoli','2e étage · 6 pers · Calme')"><div class="room-img ri2"><span class="badge b-soon">Bientôt libre</span><span class="room-cap">👥 6</span></div><div class="room-body"><div class="room-name">Salle Rivoli</div><div class="room-info">2e étage · 🔇 Calme · 🖥️ Écran</div><div class="slots"><div class="slot taken" data-user="Julie R.">9h</div><div class="slot taken" data-user="Thomas G.">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div></div></div></div>
+          <div class="room-card" onclick="openModal('Salle Opéra','4e étage · 12 pers · Projecteur')"><div class="room-img ri3"><span class="badge b-busy">Occupée</span><span class="room-cap">👥 12</span></div><div class="room-body"><div class="room-name">Salle Opéra</div><div class="room-info">4e étage · 🎥 Visio · 📽️ Projecteur</div><div class="slots"><div class="slot taken" data-user="Julie R.">9h</div><div class="slot taken" data-user="Thomas G.">10h</div><div class="slot taken" data-user="Aline L.">11h</div><div class="slot taken" data-user="Marc D.">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
           <div class="room-card" onclick="openModal('Bulle Calme A','2e étage · 4 pers · Concentration')"><div class="room-img ri4"><span class="badge b-free">Libre</span><span class="room-cap">👥 4</span></div><div class="room-body"><div class="room-name">Bulle Calme A</div><div class="room-info">2e étage · 🔇 Concentration</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div></div></div></div>
-          <div class="room-card" onclick="openModal('Espace Collab B','2e étage · 8 pers · Collaboratif')"><div class="room-img ri5"><span class="badge b-free">Libre</span><span class="room-cap">👥 8</span></div><div class="room-body"><div class="room-name">Espace Collab B</div><div class="room-info">2e étage · 🧩 Collaboratif · 🖥️ Écran</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
+          <div class="room-card" onclick="openModal('Espace Collab B','2e étage · 8 pers · Collaboratif')"><div class="room-img ri5"><span class="badge b-free">Libre</span><span class="room-cap">👥 8</span></div><div class="room-body"><div class="room-name">Espace Collab B</div><div class="room-info">2e étage · 🧩 Collaboratif · 🖥️ Écran</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot taken" data-user="Aline L.">11h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
           <div class="room-card" onclick="openModal('Salle Madeleine','1er étage · 6 pers · Visio')"><div class="room-img ri6"><span class="badge b-free">Libre</span><span class="room-cap">👥 6</span></div><div class="room-body"><div class="room-name">Salle Madeleine</div><div class="room-info">1er étage · 🎥 Visio · ☕ Repas</div><div class="slots"><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">9h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">10h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">14h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">15h</div><div class="slot" onclick="event.stopPropagation();toggleSlot(this)">16h</div></div></div></div>
         </div>
       </div>
@@ -369,14 +380,14 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
             </div>
             <div class="zone-lbl">Rangée Fenêtre</div>
             <div class="desk-row"><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span><span class="gap"></span><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span><span class="desk d-win">🪟</span></div>
-            <div class="desk-row"><span class="desk d-free" onclick="selDesk(this,'A1')">A1</span><span class="desk d-taken" data-user="K.D."></span><span class="desk d-free" onclick="selDesk(this,'A3')">A3</span><span class="gap"></span><span class="desk d-mine" onclick="selDesk(this,'A4')">A4</span><span class="desk d-free" onclick="selDesk(this,'A5')">A5</span><span class="desk d-taken" data-user="L.M."></span></div>
+            <div class="desk-row"><span class="desk d-free" onclick="selDesk(this,'A1')">A1</span><span class="desk d-taken" data-user="Marc D."></span><span class="desk d-free" onclick="selDesk(this,'A3')">A3</span><span class="gap"></span><span class="desk d-sel" onclick="selDesk(this,'A4')">A4</span><span class="desk d-free" onclick="selDesk(this,'A5')">A5</span><span class="desk d-taken" data-user="Julie R."></span></div>
             <div class="zone-lbl">Rangée Centrale</div>
-            <div class="desk-row"><span class="desk d-free" onclick="selDesk(this,'B1')">B1</span><span class="desk d-free" onclick="selDesk(this,'B2')">B2</span><span class="desk d-taken" data-user="T.G."></span><span class="gap"></span><span class="desk d-free" onclick="selDesk(this,'B4')">B4</span><span class="desk d-taken" data-user="R.P."></span><span class="desk d-free" onclick="selDesk(this,'B6')">B6</span></div>
-            <div class="desk-row"><span class="desk d-taken" data-user="A.L."></span><span class="desk d-free" onclick="selDesk(this,'C2')">C2</span><span class="desk d-free" onclick="selDesk(this,'C3')">C3</span><span class="gap"></span><span class="desk d-free" onclick="selDesk(this,'C4')">C4</span><span class="desk d-taken" data-user="M.R."></span><span class="desk d-free" onclick="selDesk(this,'C6')">C6</span></div>
+            <div class="desk-row"><span class="desk d-taken" data-user="Thomas G."></span><span class="desk d-taken" data-user="Sara C."></span><span class="desk d-free" onclick="selDesk(this,'B3')">B3</span><span class="gap"></span><span class="desk d-free" onclick="selDesk(this,'B4')">B4</span><span class="desk d-taken" data-user="Karim B."></span><span class="desk d-free" onclick="selDesk(this,'B6')">B6</span></div>
+            <div class="desk-row"><span class="desk d-free" onclick="selDesk(this,'C1')">C1</span><span class="desk d-mine">C2★</span><span class="desk d-taken" data-user="Aline L."></span><span class="gap"></span><span class="desk d-free" onclick="selDesk(this,'C4')">C4</span><span class="desk d-taken" data-user="🔒 Anonyme"></span><span class="desk d-free" onclick="selDesk(this,'C6')">C6</span></div>
             <div class="zone-lbl">Couloir</div>
             <div class="desk-row"><span class="desk d-wall"></span><span class="desk d-wall"></span><span class="desk d-wall"></span><span class="gap"></span><span class="desk d-wall"></span><span class="desk d-wall"></span><span class="desk d-wall"></span></div>
             <div class="zone-lbl">Rangée Sud</div>
-            <div class="desk-row"><span class="desk d-free" onclick="selDesk(this,'D1')">D1</span><span class="desk d-taken" data-user="S.N."></span><span class="desk d-free" onclick="selDesk(this,'D3')">D3</span><span class="gap"></span><span class="desk d-free" onclick="selDesk(this,'D4')">D4</span><span class="desk d-free" onclick="selDesk(this,'D5')">D5</span><span class="desk d-taken" data-user="F.B."></span></div>
+            <div class="desk-row"><span class="desk d-taken" data-user="Léa M."></span><span class="desk d-free" onclick="selDesk(this,'D2')">D2</span><span class="desk d-free" onclick="selDesk(this,'D3')">D3</span><span class="gap"></span><span class="desk d-taken" data-user="🔒 Anonyme"></span><span class="desk d-free" onclick="selDesk(this,'D5')">D5</span><span class="desk d-taken" data-user="Paul V."></span></div>
           </div>
           <div class="card">
             <div class="card-title" style="margin-bottom:14px">Bureau sélectionné</div>
@@ -417,24 +428,21 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
         </div>
         <div class="g64">
           <div class="meals-grid">
-            <div class="meal-card" data-cat="petit-dej"><div class="meal-img m1"><span class="meal-tag mt-pop">⭐ Populaire</span></div><div class="meal-body"><div class="meal-name">Plateau Croissants</div><div class="meal-desc">6 croissants · 4 pains au choc · jus d'orange</div><div class="meal-footer"><div class="meal-price">18,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
+            <div class="meal-card" data-cat="petit-dej"><div class="meal-img m1"><span class="meal-tag mt-pop">⭐ Populaire</span></div><div class="meal-body"><div class="meal-name">Plateau Croissants</div><div class="meal-desc">6 croissants · 4 pains au choc · jus d'orange</div><div class="meal-footer"><div class="meal-price">18,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">1</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
             <div class="meal-card" data-cat="dejeuner"><div class="meal-img m2"><span class="meal-tag mt-veg">🌿 Végétarien</span></div><div class="meal-body"><div class="meal-name">Salade César</div><div class="meal-desc">Poulet grillé · parmesan · croûtons maison</div><div class="meal-footer"><div class="meal-price">14,50 € <span>/pers</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
-            <div class="meal-card" data-cat="dejeuner"><div class="meal-img m3"><span class="meal-tag mt-new">✨ Nouveau</span></div><div class="meal-body"><div class="meal-name">Sandwichs Mix</div><div class="meal-desc">Assortiment 6 sandwichs · jambon, thon, végé</div><div class="meal-footer"><div class="meal-price">42,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
+            <div class="meal-card" data-cat="dejeuner"><div class="meal-img m3"><span class="meal-tag mt-new">✨ Nouveau</span></div><div class="meal-body"><div class="meal-name">Sandwichs Mix</div><div class="meal-desc">Assortiment 6 sandwichs · jambon, thon, végé</div><div class="meal-footer"><div class="meal-price">42,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">2</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
             <div class="meal-card" data-cat="snack"><div class="meal-img m4"><span class="meal-tag mt-pop">⭐ Populaire</span></div><div class="meal-body"><div class="meal-name">Box Fruits Frais</div><div class="meal-desc">Sélection de saison · portion individuelle</div><div class="meal-footer"><div class="meal-price">8,00 € <span>/pers</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
             <div class="meal-card" data-cat="petit-dej"><div class="meal-img m5"><span class="meal-tag mt-veg">🌿 Végétarien</span></div><div class="meal-body"><div class="meal-name">Yaourts & Granola</div><div class="meal-desc">4 yaourts nature · granola maison · miel</div><div class="meal-footer"><div class="meal-price">16,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
             <div class="meal-card" data-cat="dejeuner"><div class="meal-img m6"><span class="meal-tag mt-new">✨ Nouveau</span></div><div class="meal-body"><div class="meal-name">Plateau Sushis</div><div class="meal-desc">32 pièces · salmon, thon, végétarien</div><div class="meal-footer"><div class="meal-price">65,00 € <span>/plateau</span></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(this,-1)">−</button><span class="qty-num">0</span><button class="qty-btn" onclick="changeQty(this,1)">+</button></div></div></div></div>
           </div>
           <div class="cart-panel">
             <div class="card-title" style="margin-bottom:14px">🛒 Ma commande</div>
-            <div id="cart-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 0;color:var(--muted);gap:8px">
-              <div style="font-size:28px">🛒</div>
-              <div style="font-size:12px;font-weight:600">Panier vide</div>
-              <div style="font-size:11px;text-align:center">Ajoutez des plats pour passer commande</div>
-            </div>
-            <div id="cart-items" style="display:none"></div>
-            <div id="cart-total-row" class="cart-total" style="display:none"><span>Total</span><span id="cart-total-val">0,00 €</span></div>
-            <div id="cart-commission" style="font-size:10px;color:var(--muted);margin:8px 0 14px;display:none"></div>
-            <button id="cart-btn" class="confirm-btn" style="display:none" onclick="passerCommande()">Commander →</button>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Salle Haussmann · Mar 4 mars · 12h30</div>
+            <div class="cart-item"><span>Plateau Croissants x1</span><span style="font-weight:700">18,00 €</span></div>
+            <div class="cart-item"><span>Sandwichs Mix x2</span><span style="font-weight:700">84,00 €</span></div>
+            <div class="cart-total"><span>Total</span><span>102,00 €</span></div>
+            <div style="font-size:10px;color:var(--muted);margin:8px 0 14px">Commission Delizia (10%) : 10,20 €</div>
+            <button class="confirm-btn" onclick="showToast('Commande envoyée à Delizia · Livraison prévue 12h30 ✓')">Commander →</button>
           </div>
         </div>
       </div>
@@ -442,43 +450,44 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
       <!-- MES RÉSERVATIONS -->
       <div class="page" id="page-mesresa">
         <div class="card">
-          <div class="card-header"><div class="card-title">Mes réservations — <span id="resa-month"></span></div><button class="tb-btn primary" onclick="showPage('salles',document.querySelectorAll('.nav-item')[1])">+ Nouvelle réservation</button></div>
-          <div id="resa-list">
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Mardi 4 mars 2025 · 2h (10h00–12h00)</strong></div><div class="act-time">Salle Haussmann · Sprint Review Q1</div></div><span class="badge b-free" style="margin-left:auto">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1"><div class="act-text"><strong>Mercredi 5 mars 2025 · Journée</strong></div><div class="act-time">Bureau A4 · Flex office</div></div><span class="badge b-free" style="margin-left:auto">Confirmée</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div style="flex:1"><div class="act-text"><strong>Jeudi 6 mars 2025 · 1h (14h00–15h00)</strong></div><div class="act-time">Salle Rivoli · Comité direction</div></div><span class="badge b-soon" style="margin-left:auto">À venir</span></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div style="flex:1"><div class="act-text"><strong>Vendredi 28 février 2025 · 3h (09h00–12h00)</strong></div><div class="act-time">Salle Opéra · Rétrospective mensuelle</div></div><span class="badge b-pending" style="margin-left:auto">Passée</span></div>
-          </div>
+          <div class="card-header"><div class="card-title">Mes réservations — Mars 2026</div><button class="tb-btn primary" onclick="showPage('salles',document.querySelectorAll('.nav-item')[1])">+ Nouvelle réservation</button></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div style="flex:1"><div class="act-text"><strong>Aujourd'hui 10h–12h</strong> · Salle Haussmann · Sprint Review Q1</div><div class="act-time">3e étage · La Défense · 5 participants</div></div><span class="badge b-free" style="margin-left:auto">Confirmée</span></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div style="flex:1"><div class="act-text"><strong>Mer 5 mars 14h–16h</strong> · Bulle Calme A · Focus</div><div class="act-time">2e étage · La Défense · Solo</div></div><span class="badge b-free">Confirmée</span></div>
+          <div class="act-item"><div class="act-dot" style="background:#4a6fff"></div><div style="flex:1"><div class="act-text"><strong>Jeu 6 mars 9h–11h</strong> · Salle Madeleine · Comité RH</div><div class="act-time">1er étage · Boulogne · 8 participants</div></div><span class="badge b-pending">En attente</span></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1"><div class="act-text"><strong>Ven 7 mars · Journée</strong> · Bureau A4 · Flex office</div><div class="act-time">2e étage · La Défense · Rangée Fenêtre</div></div><span class="badge b-free">Confirmée</span></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--red)"></div><div style="flex:1"><div class="act-text"><strong>Lun 10 mars 10h–12h</strong> · Salle Opéra · Kick-off projet</div><div class="act-time">4e étage · Saint-Denis · 12 participants</div></div><span class="badge b-free">Confirmée</span></div>
         </div>
       </div>
 
       <!-- ADMIN -->
       <div class="page" id="page-admin">
         <div class="stats-row" style="margin-bottom:20px">
-          <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-num">4</div><div class="stat-label">Sites actifs</div><div class="stat-trend up">↑ +1 ce trimestre</div></div>
-          <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-num">47</div><div class="stat-label">Utilisateurs actifs</div><div class="stat-trend up">↑ +6 ce mois</div></div>
-          <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">156</div><div class="stat-label">Réservations</div><div class="stat-trend up">↑ +23 vs mois dernier</div></div>
-          <div class="stat-card"><div class="stat-icon">💶</div><div class="stat-num">2 340<span>€</span></div><div class="stat-label">Commissions repas</div><div class="stat-trend up">↑ +18% vs mois dernier</div></div>
+          <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-num">4</div><div class="stat-label">Sites actifs — IDF</div><div class="stat-trend">La Défense · Boulogne · Saint-Denis · Vincennes</div></div>
+          <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-num">247</div><div class="stat-label">Utilisateurs actifs</div><div class="stat-trend up">↑ +12 ce mois</div></div>
+          <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">1<span>842</span></div><div class="stat-label">Réservations — Mars</div><div class="stat-trend up">↑ +23% vs fév.</div></div>
+          <div class="stat-card"><div class="stat-icon">💶</div><div class="stat-num">3<span>840€</span></div><div class="stat-label">Commissions repas — Mars</div><div class="stat-trend up">↑ 384 commandes</div></div>
         </div>
         <div class="g2" style="margin-bottom:16px">
           <div class="card">
-            <div class="card-header"><div class="card-title">Sites actifs</div></div>
-            <div class="occ-row"><div class="occ-name">🏙️ La Défense</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:78%;background:var(--blue)"></div></div><div class="occ-pct">78%</div></div>
-            <div class="occ-row"><div class="occ-name">🌆 Boulogne</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:61%;background:var(--blue)"></div></div><div class="occ-pct">61%</div></div>
-            <div class="occ-row"><div class="occ-name">🏙️ Saint-Denis</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:45%;background:var(--blue)"></div></div><div class="occ-pct">45%</div></div>
-            <div class="occ-row"><div class="occ-name">🌳 Vincennes</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:33%;background:var(--blue)"></div></div><div class="occ-pct">33%</div></div>
+            <div class="card-header"><div class="card-title">Gestion des sites — Île-de-France</div></div>
+            <div class="occ-row"><div class="occ-name">🏙️ La Défense</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:72%;background:var(--blue)"></div></div><div class="occ-pct">72%</div></div>
+            <div class="occ-row"><div class="occ-name">🌆 Boulogne</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:58%;background:#4a6fff"></div></div><div class="occ-pct">58%</div></div>
+            <div class="occ-row"><div class="occ-name">🏘️ Saint-Denis</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:41%;background:var(--gold)"></div></div><div class="occ-pct">41%</div></div>
+            <div class="occ-row"><div class="occ-name">🏛️ Vincennes</div><div class="occ-bar-wrap"><div class="occ-bar" style="width:33%;background:#8B5CF6"></div></div><div class="occ-pct">33%</div></div>
           </div>
           <div class="card">
-            <div class="card-header"><div class="card-title">Modules activés</div></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Salles & Espaces</strong> — Actif</div><div class="act-time">6 salles configurées</div></div></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Bureaux Flex</strong> — Actif</div><div class="act-time">24 postes disponibles</div></div></div>
-            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Services Repas</strong> — Actif</div><div class="act-time">Delizia Paris · partenaire actif</div></div></div>
+            <div class="card-header"><div class="card-title">Modules activés — Nexio Group</div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Salles & Espaces</strong> — Core</div><div class="act-time">12 salles · 4 sites</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Bureaux Flex</strong> — Actif</div><div class="act-time">80 postes · 4 étages</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div><div class="act-text">✅ <strong>Services Repas</strong> — Core</div><div class="act-time">Delizia Paris · partenaire actif</div></div></div>
             <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text">⭕ <strong>Coworking</strong> — Désactivé</div><div class="act-time"><span style="color:var(--blue);cursor:pointer">Activer ce module →</span></div></div></div>
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="card-title">Alertes & Anomalies</div><span class="badge b-soon">1 alerte</span></div>
-          <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div style="flex:1"><div class="act-text"><strong>Salle Haussmann — Taux d'occupation faible</strong></div><div class="act-time">Réservée 3× cette semaine sur 10 créneaux disponibles</div></div><span class="badge b-soon">À surveiller</span></div>
+          <div class="card-header"><div class="card-title">Alertes & Anomalies</div><span class="badge b-busy">3 alertes</span></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--red)"></div><div><div class="act-text">⚠️ <strong>Salle Rivoli</strong> — Réservée sans check-in depuis 45 min (Boulogne)</div><div class="act-time">Libération automatique dans 15 min</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div><div class="act-text">⚡ <strong>Site Saint-Denis</strong> — Taux d'occupation en baisse (−18% ce mois)</div><div class="act-time">Recommandation : réduire le nombre de bureaux réservables</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--gold)"></div><div><div class="act-text">☕ <strong>Commande Delizia</strong> — Livraison en retard de 12 min (La Défense)</div><div class="act-time">Prestataire notifié automatiquement</div></div></div>
         </div>
       </div>
 
@@ -495,7 +504,7 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
     <label class="f-label">Objet de la réunion</label>
     <input class="f-input" type="text" placeholder="Ex: Sprint Review Q1" />
     <div class="f-row">
-      <div><label class="f-label">Date</label><input class="f-input" type="text" id="modal-date" readonly /></div>
+      <div><label class="f-label">Date</label><input class="f-input" type="text" value="Mardi 4 mars 2026" readonly /></div>
       <div><label class="f-label">Durée</label><select class="f-select"><option>1h (10h00–11h00)</option><option selected>2h (10h00–12h00)</option><option>3h (10h00–13h00)</option></select></div>
     </div>
     <label class="f-label">Participants</label>
@@ -523,6 +532,212 @@ html{height:100%}body{height:100%;font-family:'Outfit',sans-serif;color:var(--te
 
 <div class="toast" id="toast">✅ <span id="toast-msg"></span></div>
 
-<script src="/js/demo-public.js"></script>
+<script>
+// ─── SUPABASE AUTH GUARD ─────────────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(
+  'https://farjfneueqxzikljvepa.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhcmpmbmV1ZXF4emlrbGp2ZXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MjEzMTcsImV4cCI6MjA4ODI5NzMxN30.JEQAAZvuFnWmKzGl-xl11LWGILHAbeLfsquyiOVZz1Q'
+);
+
+let currentUser = null;
+
+sb.auth.getSession().then(({ data }) => {
+  if (!data.session) {
+    window.location.href = 'auth.html';
+    return;
+  }
+  currentUser = data.session.user;
+  const name = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+  // Update displayed name in sidebar
+  const nameEl = document.getElementById('user-display-name');
+  if (nameEl) nameEl.textContent = name;
+  const initEl = document.getElementById('user-initials');
+  if (initEl) {
+    const parts = name.split(' ');
+    initEl.textContent = parts.map(p => p[0]).join('').toUpperCase().slice(0,2);
+  }
+});
+
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'auth.html';
+}
+
+// ─── SUPABASE CONFIG ────────────────────────────────────────────────────────
+// Remplace ces deux valeurs par celles de ton projet Supabase
+// (Settings → API dans le dashboard Supabase)
+const SUPABASE_URL = 'https://farjfneueqxzikljvepa.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhcmpmbmV1ZXF4emlrbGp2ZXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MjEzMTcsImV4cCI6MjA4ODI5NzMxN30.JEQAAZvuFnWmKzGl-xl11LWGILHAbeLfsquyiOVZz1Q';
+
+async function saveReservation(data) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Supabase error ' + res.status);
+  } catch(e) {
+    console.warn('Supabase non configuré — réservation en local uniquement');
+  }
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+const sites = [
+  {name:'Paris – La Défense', short:'La Défense'},
+  {name:'Boulogne-Billancourt', short:'Boulogne'},
+  {name:'Saint-Denis', short:'Saint-Denis'},
+  {name:'Vincennes', short:'Vincennes'}
+];
+let siteIdx = 0;
+
+function cycleSite() {
+  siteIdx = (siteIdx + 1) % sites.length;
+  const s = sites[siteIdx];
+  document.getElementById('site-name').textContent = s.name;
+  const s2 = document.getElementById('site-name2');
+  if (s2) s2.textContent = s.short;
+  document.getElementById('co-site-label').textContent = '📍 ' + s.name;
+  document.getElementById('tb-sub').textContent = 'Mardi 4 mars 2026 · Site ' + s.name;
+  document.getElementById('floor-title').textContent = 'Plan · 2e étage — Open Space Nord · ' + s.short;
+  showToast('Site changé → ' + s.name);
+}
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = {dashboard:'Tableau de bord', salles:'Salles de réunion', bureaux:'Bureaux flex', repas:'Commander repas', mesresa:'Mes réservations', admin:'Administration'};
+  document.getElementById('tb-title').textContent = titles[id] || id;
+}
+
+// ─── SALLES ──────────────────────────────────────────────────────────────────
+function toggleSlot(el) {
+  if (el.classList.contains('taken')) return;
+  el.classList.toggle('sel');
+}
+
+function selectDate(el) {
+  document.querySelectorAll('#page-salles [onclick="selectDate(this)"]').forEach(d => {
+    d.style.background = 'var(--light)';
+    d.style.borderColor = 'var(--border)';
+    d.querySelectorAll('div').forEach((c, i) => { c.style.color = i === 0 ? 'var(--muted)' : 'var(--text)'; });
+  });
+  el.style.background = 'var(--navy)';
+  el.style.borderColor = 'var(--navy)';
+  el.querySelectorAll('div').forEach(c => c.style.color = 'white');
+}
+
+// ─── MODAL RÉSERVATION SALLE ─────────────────────────────────────────────────
+let currentRoom = '';
+function openModal(name, sub) {
+  currentRoom = name;
+  document.getElementById('modal-room-title').textContent = 'Réserver — ' + name;
+  document.getElementById('modal-room-sub').textContent = sub;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+let mealOn = true;
+function toggleMeal() {
+  mealOn = !mealOn;
+  document.getElementById('meal-toggle-btn').classList.toggle('off', !mealOn);
+}
+
+// Visibilité dans le modal salle
+let salleVisibilite = 'nom';
+function setVisibility(mode) {
+  salleVisibilite = mode;
+  document.getElementById('vt-nom').classList.toggle('active', mode === 'nom');
+  document.getElementById('vt-anon').classList.toggle('active', mode === 'anon');
+}
+
+async function confirmBooking() {
+  const isAnon = salleVisibilite === 'anon';
+  await saveReservation({
+    type: 'salle',
+    resource_id: currentRoom,
+    user_name: isAnon ? null : 'Sophie C.',
+    is_anonymous: isAnon,
+    date: 'Mar 4',
+    time_slot: '10h00–12h00'
+  });
+  closeModal();
+  showToast('Réservation confirmée ! Invitation envoyée aux participants.');
+}
+
+// ─── BUREAUX ─────────────────────────────────────────────────────────────────
+let selectedDesk = 'A4';
+let deskVisibilite = 'nom';
+
+function selectFloor(el, floor) {
+  document.querySelectorAll('.floor-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const labels = {2:'2e étage — Open Space Nord', 3:'3e étage — Open Space Sud', 4:'4e étage — Direction'};
+  document.getElementById('floor-title').textContent = 'Plan · ' + labels[floor] + ' · ' + sites[siteIdx].short;
+}
+
+function selDesk(el, id) {
+  if (el.classList.contains('d-taken') || el.classList.contains('d-mine') || el.classList.contains('d-wall') || el.classList.contains('d-win')) return;
+  document.querySelectorAll('.d-sel').forEach(d => { d.classList.remove('d-sel'); d.classList.add('d-free'); });
+  el.classList.remove('d-free');
+  el.classList.add('d-sel');
+  selectedDesk = id;
+  const rangees = {A:'Fenêtre', B:'Centrale', C:'Centrale', D:'Sud'};
+  document.getElementById('desk-selected-name').textContent = 'Bureau ' + id + ' · Rangée ' + (rangees[id[0]] || '');
+}
+
+function setDeskVisibility(mode) {
+  deskVisibilite = mode;
+  document.getElementById('vt-desk-nom').classList.toggle('active', mode === 'nom');
+  document.getElementById('vt-desk-anon').classList.toggle('active', mode === 'anon');
+}
+
+async function reserverBureau() {
+  const isAnon = deskVisibilite === 'anon';
+  await saveReservation({
+    type: 'bureau',
+    resource_id: selectedDesk,
+    user_name: isAnon ? null : 'Sophie C.',
+    is_anonymous: isAnon,
+    date: 'Mar 4',
+    time_slot: 'Journée'
+  });
+  showToast('Bureau ' + selectedDesk + ' réservé ! Confirmation envoyée par email.');
+}
+
+// ─── REPAS ───────────────────────────────────────────────────────────────────
+function filterMeals(el, cat) {
+  document.querySelectorAll('.meal-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.meal-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+  });
+}
+
+function changeQty(btn, delta) {
+  const ctrl = btn.parentElement;
+  const numEl = ctrl.querySelector('.qty-num');
+  let val = parseInt(numEl.textContent) + delta;
+  if (val < 0) val = 0;
+  numEl.textContent = val;
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
 </body>
 </html>
